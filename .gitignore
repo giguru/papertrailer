@@ -11,6 +11,9 @@
 # production
 /build
 
+# ignore intellij files
+.idea/
+
 # misc
 .DS_Store
 .env.local
