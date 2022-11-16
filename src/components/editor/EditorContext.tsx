@@ -1,28 +1,55 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
+import {AnySelection, ExtendedBoundingBlock} from "./EditorViewer.utils";
+import {RelationValue} from "../../utils/enums";
 
-interface EditorContextInterface {
-    scaler: number,
-    setScalar: Function,
-}
-const initialState : EditorContextInterface = {
-    scaler: 0.5,
-    setScalar: () => {},
+export interface FlowData {
+    relation?: RelationValue,
 }
 
-const EditorContext = React.createContext<EditorContextInterface>(initialState);
+interface EditorContextProps {
+    selectedBoundingBoxesPerEditor: {
+        [k: string]: AnySelection | undefined
+    },
+    setSelectedBoundingBoxes(editorId: string, selection: AnySelection | undefined): void,
+    flowData: FlowData,
+    addFlowData(data: FlowData) : void
+}
 
-export default EditorContext;
+const EditorContext = React.createContext<EditorContextProps>({
+    selectedBoundingBoxesPerEditor: {},
+    setSelectedBoundingBoxes: () => {},
+    flowData: {},
+    addFlowData: (data) => {}
+});
 
-export function EditorContextProvider({ children }: { children: React.ReactNode }) {
-    const [scaler, setScalar] = useState<number>(initialState.scaler);
+export function useEditorContext(): EditorContextProps {
+    return useContext(EditorContext);
+}
+
+export function EditorContextProvider({ children }: { children: React.ReactNode}) {
+    const [selectedBoundingBoxesPerEditor, setSelectedBoundingBoxesPerEditor] = useState({});
+    const [flowData, setFlowData] = useState<FlowData>({});
+
+    const setSelectedBoundingBoxes = (editorId: string, selection: AnySelection) => {
+        setSelectedBoundingBoxesPerEditor({
+            ...selectedBoundingBoxesPerEditor,
+            [editorId]: selection,
+        });
+    }
+
     return (
         <EditorContext.Provider
             value={{
-                scaler,
-                setScalar,
+                selectedBoundingBoxesPerEditor,
+                setSelectedBoundingBoxes,
+                flowData,
+                addFlowData: (newData : FlowData) => setFlowData({...flowData, ...newData}),
             }}
         >
             {children}
         </EditorContext.Provider>
-    );
+    )
 }
+
+
+export default EditorContext;

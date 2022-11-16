@@ -22,7 +22,7 @@ function App() {
                     <Route index element={<Home />} />
                     <Route path="home" element={<Home />} />
                     <Route path="my-sources" element={<Sources />} />
-                    <Route path="editor" element={<Editor />} />
+                    <Route path="editor/:id" element={<Editor />} />
                 </Route>
             </Routes>
             <ReactQueryDevtools initialIsOpen={false}/>

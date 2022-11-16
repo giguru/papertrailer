@@ -1,18 +1,39 @@
 import {DragEvent} from "react";
 
-export interface BoundingBox {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    text: string,
+// Every type of editor must eventually yield a selection box. Do not export. Create extended classes instead.
+interface SelectionBox {
+    text: string
+    x: number
+    y: number
+    width: number
+    height: number
 }
-export interface ExtendedBoundingBox extends BoundingBox {
+
+export interface BoundingBlock extends SelectionBox {
+    id: number,
+    line_num: number,
+    block_num: number,
+}
+
+export interface PdfJSSelectionBox extends SelectionBox {
+    originalSelection: Selection
+}
+
+export interface SelectionBoxContextProps {
     selected: boolean,
+    fileId: number,
 }
-export interface ApiBoundingBoxes {
-    [k: number]: Array<BoundingBox>
+
+export type PdfJSBoxSelection = PdfJSSelectionBox & SelectionBoxContextProps;
+export type ExtendedBoundingBlock = BoundingBlock & SelectionBoxContextProps
+
+export interface BoundingBoxSelection {
+    text: string,
+    boundingBlocks: ExtendedBoundingBlock[],
 }
+
+export type AnySelection = BoundingBoxSelection | PdfJSBoxSelection
+
 export interface DragData {
     pageX: number,
     pageY: number,
@@ -20,27 +41,27 @@ export interface DragData {
 export interface DragWindow {
     width: number,
     height: number,
-    left: number,
-    top: number,
+    x: number,
+    y: number,
 }
 
 const toPercentage = (x: number, denominator: number) => (denominator
     ? `${x / denominator * 100}%`
     : x);
 
-const inDragWindow = (bb: BoundingBox, scaler: number, dragWindow: DragWindow | undefined): boolean => {
+const inDragWindow = (bb: BoundingBlock, scaler: number, dragWindow: DragWindow | undefined): boolean => {
     if (!dragWindow) {
         return false;
     } else {
         // Check if each cornor of the bounding box is in the drag window
-        const topLeftIsIn = bb.x * scaler >= dragWindow.left && bb.x * scaler <= dragWindow.left + dragWindow.width
-            && bb.y * scaler >= dragWindow.top && bb.y * scaler <= dragWindow.top + dragWindow.height;
-        const bottomLeftIsIn = bb.x * scaler >= dragWindow.left && bb.x * scaler <= dragWindow.left + dragWindow.width
-            && (bb.y + bb.height) * scaler >= dragWindow.top && (bb.y + bb.height) * scaler <= dragWindow.top + dragWindow.height;
-        const topRightIsIn = (bb.x + bb.width) * scaler >= dragWindow.left && (bb.x + bb.width) * scaler <= dragWindow.left + dragWindow.width
-            && bb.y * scaler >= dragWindow.top && bb.y * scaler <= dragWindow.top + dragWindow.height;
-        const bottomRightIsIn = (bb.x + bb.width) * scaler >= dragWindow.left && (bb.x + bb.width) * scaler <= dragWindow.left + dragWindow.width
-            && (bb.y + bb.height) * scaler >= dragWindow.top && (bb.y + bb.height) * scaler <= dragWindow.top + dragWindow.height;
+        const topLeftIsIn = bb.x * scaler >= dragWindow.x && bb.x * scaler <= dragWindow.x + dragWindow.width
+            && bb.y * scaler >= dragWindow.y && bb.y * scaler <= dragWindow.y + dragWindow.height;
+        const bottomLeftIsIn = bb.x * scaler >= dragWindow.x && bb.x * scaler <= dragWindow.x + dragWindow.width
+            && (bb.y + bb.height) * scaler >= dragWindow.y && (bb.y + bb.height) * scaler <= dragWindow.y + dragWindow.height;
+        const topRightIsIn = (bb.x + bb.width) * scaler >= dragWindow.x && (bb.x + bb.width) * scaler <= dragWindow.x + dragWindow.width
+            && bb.y * scaler >= dragWindow.y && bb.y * scaler <= dragWindow.y + dragWindow.height;
+        const bottomRightIsIn = (bb.x + bb.width) * scaler >= dragWindow.x && (bb.x + bb.width) * scaler <= dragWindow.x + dragWindow.width
+            && (bb.y + bb.height) * scaler >= dragWindow.y && (bb.y + bb.height) * scaler <= dragWindow.y + dragWindow.height;
         return topLeftIsIn || bottomLeftIsIn || topRightIsIn || bottomRightIsIn;
     }
 }

@@ -1,22 +1,71 @@
-import React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React, {useMemo} from 'react';
+import { useTable, UseTableOptions} from 'react-table';
+import {useNavigate} from "react-router";
 
-interface TableProps<TRow> {
+interface TableProps<TRow extends object> {
     rows: TRow[];
-    columns: GridColDef[];
+    columns: UseTableOptions<TRow>["columns"]
+    linkBuilder: ({ row }: { row: TRow }) => string
 }
 
-function Table<T>({ rows, columns } : TableProps<T>) {
+function Table<T extends object>({ rows: rowsProp, columns, linkBuilder } : TableProps<T>) {
+    const navigate = useNavigate();
+    const data = useMemo(() => rowsProp, [rowsProp]);
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow
+    } = useTable<T>({ columns, data });
+
     return (
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                checkboxSelection={false}
-            />
-        </div>
+        <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
+            <thead>
+            {headerGroups.map(headerGroup => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map(column => (
+                        <th
+                            {...column.getHeaderProps()}
+                            style={{
+                                background: '#657',
+                                color: 'white',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            {column.render('Header')}
+                        </th>
+                    ))}
+                </tr>
+            ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+            {rows.map(row => {
+                prepareRow(row);
+                return (
+                    <tr
+                        {...row.getRowProps()}
+                        onClick={linkBuilder ? () => navigate(linkBuilder({ row: row.original })) : undefined}
+                    >
+                        {row.cells.map(cell => {
+                            return (
+                                <td
+                                    {...cell.getCellProps()}
+                                    style={{
+                                        padding: '10px',
+                                        border: 'solid 0.6px gray',
+                                        background: '#fff'
+                                    }}
+                                >
+                                    {cell.render('Cell')}
+                                </td>
+                            );
+                        })}
+                    </tr>
+                );
+            })}
+            </tbody>
+        </table>
     );
 }
 

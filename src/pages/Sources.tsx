@@ -3,6 +3,7 @@ import Page from "../components/layout/page/Page";
 import {useSources} from "../api/hooks/sources";
 import Table from "../components/tables/Table";
 import Loader from "../components/loader/Loader";
+import {routes} from "../utils/routes";
 
 interface SourcesProp {
 
@@ -18,10 +19,11 @@ const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
             {Array.isArray(sources) && (
                 <Table
                     rows={sources}
+                    linkBuilder={({ row: source }) => routes.editSource(source.id)}
                     columns={[
-                        { headerName: 'Title', field: 'title', flex: 1, filterable: false, sortable: false, hideable: false },
-                        { headerName: 'Created', field: 'created_at', filterable: false, sortable: false, hideable: false },
-                        { headerName: 'Last modified', field: 'updated_at', filterable: false, sortable: false, hideable: false },
+                        { Header: 'Title', accessor: 'title' },
+                        { Header: 'Created', accessor: 'created_at' },
+                        { Header: 'Last modified', accessor: 'updated_at' },
                     ]}
                 />
             )}

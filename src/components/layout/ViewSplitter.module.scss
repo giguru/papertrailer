@@ -1,0 +1,53 @@
+
+.ViewSplitter {
+    display: flex;
+
+    .Side {
+        transition: all 0.8s;
+        height: calc(100vh - 70px);  // 70px is the header height
+        max-height: calc(100vh - 70px);
+
+        &.Placeholder {
+            width: 0;
+            flex: 0 0 0;
+            overflow: hidden;
+        }
+        &:not(.Placeholder) {
+            &.Active {
+                overflow: scroll;
+                flex: 1;
+            }
+            &.InActive {
+                overflow: hidden;
+                flex: 0 0 100px;
+                position: relative;
+                cursor: pointer;
+                &:hover::before {
+                    background: rgba(0,0,100,0.3);
+                }
+                &::before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    // Height is very high to make sure you cover all content even when scrolled. The top position is
+                    // grounded at y=0, with scrollTop=0. I.e. when scrolling ::before scrolls out of view.
+                    height: 100000%;
+                    background: rgba(0,0,0,0.3);
+                    z-index: 300;
+                }
+            }
+        }
+
+        + .Side:not(.Placeholder) {
+            border-left: 3px solid #fff;
+        }
+
+        .InnerSide {
+            height: inherit;
+            min-width: 800px;
+        }
+    }
+}

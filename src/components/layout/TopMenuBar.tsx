@@ -21,6 +21,7 @@ const pages : PageType = {
     'Home': '/home',
     'Public Nets': '/nets',
     'My sources': '/my-sources',
+    'Editor': '/editor',
 };
 
 const settings : PageType = {

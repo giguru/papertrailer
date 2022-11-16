@@ -22,17 +22,25 @@ interface FormInput {
     isNew: boolean;
     endpoint: string;
     children: React.ReactNode,
+    onSuccess?: Function,
+    initialFormData?: Record<string, any>,
 }
 
 const Form: React.FC<FormInput> = <TInputObject extends FormikValues>({
     isNew,
     endpoint,
     children,
+    onSuccess,
+    initialFormData = {},
 }: FormInput) => {
     const id = useId();
-
-    const putCall = (data: TInputObject) => axios.put(endpoint, data);
-    const postCall = (data: TInputObject) => axios.post(endpoint, data);
+    const onSuccessCallback = () => {
+        if (typeof onSuccess === 'function') {
+            onSuccess();
+        }
+    }
+    const putCall = (data: TInputObject) => axios.put(endpoint, data).then(onSuccessCallback);
+    const postCall = (data: TInputObject) => axios.post(endpoint, data).then(onSuccessCallback);
 
     const {
         isLoading,
@@ -55,12 +63,11 @@ const Form: React.FC<FormInput> = <TInputObject extends FormikValues>({
     if (isError) { // @ts-ignore
         return <Alert severity="error">{error}</Alert>;
     }
-
     const {
         data
     } : {
         data: TInputObject
-    } = allData;
+    } = allData || { data: initialFormData };
 
     return (
         <Formik

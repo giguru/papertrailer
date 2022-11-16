@@ -1,14 +1,184 @@
-import React from 'react';
-import {EditorContextProvider} from "../components/editor/EditorContext";
-import LintMenu from "../components/editor/LintMenu";
+import React, {useContext, useState} from 'react';
+import {Formik, FormikHelpers} from "formik";
+import {EditorViewerContextProvider, useEditorViewerContext} from "../components/editor/EditorViewerContext";
+import LintMenu from "../components/editor/shared/LintMenu";
 import EditorViewer from "../components/editor/EditorViewer";
+import ViewSplitter from "../components/layout/ViewSplitter";
+import SearchDocumentView from "./views/SearchDocumentView";
+import SelectionPopUp from "../components/editor/BoundingBoxesSelectionPopUp";
+import {ViewSplitterContext} from "../components/layout/ViewSplitter.utils";
+import EditorContext, {EditorContextProvider, FlowData, useEditorContext} from "../components/editor/EditorContext";
+import RadioButtonsGroup from "../components/forms/RadioButtonsGroup";
+import Button from "../components/button/Button";
+import {useParams} from "react-router";
+import {relationOptions, RelationValue} from "../utils/enums";
+import RelationPopUp from "../components/editor/RelationPopUp";
+import PdfjsViewer from "../components/editor/mozilla-pdfjs-based/PdfjsViewer";
+
+const mainViewEditorId: string = 'main';
+const otherViewEditorId: string = 'other';
+
+interface MainViewFlowData extends FlowData {
+    relation: RelationValue
+}
+
+interface RouteParams extends Record<string, string> {
+    id: string
+}
+
+function MainView() {
+    const { id } = useParams<RouteParams>();
+    const { openView } = useContext(ViewSplitterContext);
+    const { setSelectedBoundingBoxes, addFlowData } = useEditorContext();
+    const { clearSelectedContent } = useEditorViewerContext();
+    const initialValues: MainViewFlowData = { relation: RelationValue.Relates };
+
+    if (!id) {
+        return <span>No document ID was provided</span>
+    }
+
+    return (
+        <>
+            <LintMenu />
+            <EditorViewer
+                fileId={id}
+                Component={({ selection }) => (
+                    <SelectionPopUp
+                        selection={selection}
+                        onCancel={clearSelectedContent}
+                    >
+                        <Formik
+                            initialValues={initialValues}
+                            onSubmit={(values: MainViewFlowData, { setSubmitting }: FormikHelpers<MainViewFlowData>) => {
+                                addFlowData({
+                                    relation: values.relation,
+                                });
+                                setSelectedBoundingBoxes(mainViewEditorId, selection);
+                                setSubmitting(false);
+                            }}
+                        >
+                            {(formikProps) => (
+                                <form onSubmit={formikProps.handleSubmit}>
+                                    <code>
+                                        {selection.text}
+                                    </code>
+                                    <RadioButtonsGroup.Formik
+                                        label="Relation"
+                                        options={Object.values(relationOptions)}
+                                        name="relation"
+                                    />
+                                    <Button
+                                        onClick={async (e) => {
+                                            openView(e, 1);
+                                            await formikProps.submitForm();
+                                        }}
+                                    >
+                                        Link other document
+                                    </Button>
+                                </form>
+                            )}
+                        </Formik>
+                    </SelectionPopUp>
+                )}
+            />
+        </>
+    );
+}
+
+function OtherView() {
+    const { id } = useParams<RouteParams>();
+    const [selectedItem, setSelectedItem] = useState<{id: string, filename: string} | undefined>();
+    const { selectedBoundingBoxesPerEditor, flowData, setSelectedBoundingBoxes } = useContext(EditorContext);
+    const { clearSelectedContent } = useEditorViewerContext();
+
+    if (!selectedItem) {
+        return <SearchDocumentView onSelect={setSelectedItem} />;
+    }
+
+    if (!flowData.relation) {
+        return <span>No relation was selected</span>;
+    }
+    const selectionA = selectedBoundingBoxesPerEditor[mainViewEditorId];
+
+    return (
+        <>
+            <LintMenu
+                preChildren={(
+                    <>
+                        <Button onClick={() => setSelectedItem(undefined)}>Choose other document</Button>
+                    </>
+                )}
+            />
+            {selectionA
+                ? (
+                    <EditorViewer
+                        fileId={selectedItem.id}
+                        Component={({ selection: selectionB }) => {
+                            const initialFormData = {
+                                sources: {
+                                    _ids: [selectedItem.id, id],
+                                },
+                                relation: flowData.relation,
+                                file_bounding_blocks: {
+                                    _ids: [],
+                                },
+                            }
+                            /* TODO fix saving
+                            if ("boundingBlocks" in selectionB) {
+                                initialFormData.file_bounding_blocks._ids =
+                                    initialFormData.file_bounding_blocks._ids.concat(selectionB.boundingBlocks.map(bb => bb.id))
+                            }
+
+                            if ("boundingBlocks" in selectionA) {
+                                initialFormData.file_bounding_blocks._ids =
+                                    initialFormData.file_bounding_blocks._ids.concat(selectionA.boundingBlocks.map(bb => bb.id))
+                            }
+                            */
+
+                            return (
+                                <SelectionPopUp
+                                    selection={selectionB}
+                                    onCancel={clearSelectedContent}
+                                    header="Relatie aanmaken"
+                                >
+                                    <RelationPopUp
+                                        selectionA={selectionA}
+                                        selectionB={selectionB}
+                                        initialFormData={initialFormData}
+                                        onSuccess={() => {
+                                            clearSelectedContent()
+                                            setSelectedBoundingBoxes(mainViewEditorId, undefined);
+                                        }}
+                                    />
+                                </SelectionPopUp>
+                            )
+                        }}
+                    />
+                ) : (
+                    <div>No initial selection...</div>
+                )}
+        </>
+    );
+}
 
 function Editor() {
     return (
-        <EditorContextProvider>
-            <LintMenu />
-            <EditorViewer />
-        </EditorContextProvider>
+        <>
+            <EditorContextProvider>
+                <ViewSplitter defaultActiveIndex={0}>
+                    <ViewSplitter.Side index={0} alwaysShow>
+                        <EditorViewerContextProvider id={mainViewEditorId}>
+                            <MainView />
+                        </EditorViewerContextProvider>
+                    </ViewSplitter.Side>
+                    <ViewSplitter.Side index={1}>
+                        <EditorViewerContextProvider id={otherViewEditorId}>
+                            <OtherView />
+                        </EditorViewerContextProvider>
+                    </ViewSplitter.Side>
+                </ViewSplitter>
+            </EditorContextProvider>
+        </>
     );
 }
 
