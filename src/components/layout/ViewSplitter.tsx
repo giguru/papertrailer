@@ -19,9 +19,7 @@ function ViewSplitter({ children, defaultActiveIndex = 0 }: ViewSplitterProps) {
         <ViewSplitterContext.Provider
             value={{
                 activeIndex: activeIndex,
-                openView: (e: MouseEvent, index: number) => {
-                    setActiveIndex(index)
-                },
+                openView: setActiveIndex,
             }}
         >
             <div className={styles.ViewSplitter}>
@@ -42,7 +40,7 @@ const Side : React.FunctionComponent<SideProps> = ({ children, index, alwaysShow
                 [styles.Active]: isActive,
                 [styles.InActive]: !isActive
             })}
-            onClick={isActive ? undefined : (e) => openView(e, index)}
+            onClick={isActive ? undefined : () => openView(index)}
         >
             {alwaysShow || isActive
                 ? (

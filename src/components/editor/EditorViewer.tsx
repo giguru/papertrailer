@@ -8,11 +8,12 @@ import styles from "./mozilla-pdfjs-based/PdfjsViewer.module.scss";
 
 interface EditorViewerProps {
     Component: React.FunctionComponent<{ selection: AnySelection }>,
-    fileId: string,
+    fileId: number | string,
+    isActive?: boolean
 }
 
 // A single file viewer
-function EditorViewer({ Component, fileId }: EditorViewerProps) {
+function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps) {
     const { selectedContent } = useEditorViewerContext();
     const {
         file: fullData,
@@ -24,7 +25,7 @@ function EditorViewer({ Component, fileId }: EditorViewerProps) {
     return (
         <EditorViewerContainer className={styles.PageCanvas}>
             {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
-            <PdfjsViewer />
+            {isActive && <PdfjsViewer />}
             {/*<BoundingBoxesViewer files={fullData?.files} Component={Component} />*/}
             {selectedContent && Component
                 && <Component selection={selectedContent} />}

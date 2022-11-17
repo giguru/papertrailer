@@ -4,7 +4,7 @@ import {
     cumulativeOffset,
     DragData,
     dragEventToDragData, DragWindow,
-    ExtendedBoundingBlock,
+    BoundingBlock,
     inDragWindow,
     toPercentage
 } from "../EditorViewer.utils";
@@ -37,13 +37,8 @@ function InteractionInterface({ file }: { file: ApiFileInterface }) {
         y: Math.min(drag.pageY, dragStart.pageY) - imageContainerOffset.top,
     };
 
-    const boundingBoxes = (file.file_bounding_blocks ? file.file_bounding_blocks : []).map<ExtendedBoundingBlock>((d) => {
-        return {
-            ...d,
-            selected: inDragWindow(d, scaler, dragWindow),
-            fileId: file.id,
-        };
-    });
+    const boundingBoxes = (file.file_bounding_blocks ? file.file_bounding_blocks : []);
+    const selectedBoxes = boundingBoxes.filter(bb => inDragWindow(bb, scaler, dragWindow));
 
     return (
         <>
@@ -62,8 +57,10 @@ function InteractionInterface({ file }: { file: ApiFileInterface }) {
                     }
                 }}
                 onDragEnd={() => {
-                    const selectedBoxes = boundingBoxes.filter(bb => bb.selected);
+
                     setSelectedContent({
+                        selected: true,
+                        fileId: file.id,
                         text: boundingBoxesToText(selectedBoxes),
                         boundingBlocks: selectedBoxes,
                     });
@@ -77,25 +74,20 @@ function InteractionInterface({ file }: { file: ApiFileInterface }) {
             {dragWindow && (
                 <DraggedSelectionArea coordinates={dragWindow} />
             )}
-            {Array.isArray(boundingBoxes) && boundingBoxes.map((d) => {
-                return d.selected
-                    ? (
-                        <div
-                            key={d.id}
-                            style={{
-                                position: 'absolute',
-                                left: toPercentage(d.x, initialImageWidth),
-                                top: toPercentage(d.y, imageHeight),
-                                width: toPercentage(d.width, initialImageWidth),
-                                height: toPercentage(d.height, imageHeight),
-                            }}
-                            className={[
-                                styles.BoundingBox,
-                                d.selected ? styles.Selected : ''
-                            ].join(' ')}
-                        />
-                    )
-                    : null;
+            {Array.isArray(selectedBoxes) && selectedBoxes.map((d) => {
+                return (
+                    <div
+                        key={d.id}
+                        style={{
+                            position: 'absolute',
+                            left: toPercentage(d.x, initialImageWidth),
+                            top: toPercentage(d.y, imageHeight),
+                            width: toPercentage(d.width, initialImageWidth),
+                            height: toPercentage(d.height, imageHeight),
+                        }}
+                        className={[styles.BoundingBox, styles.Selected].join(' ')}
+                    />
+                );
             })}
         </>
     );

@@ -37,7 +37,7 @@ function Select({ label, options, defaultValue = "", onChange, value, name }: Se
                 name={name}
                 native
             >
-                <option aria-label="None" value=""/>
+                <option aria-label="None" value="" />
                 {optionGroups
                     ? Object.keys(optionGroups).map(label => (
                         <optgroup key={label} label={label}>

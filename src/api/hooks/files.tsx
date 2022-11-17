@@ -10,10 +10,7 @@ export function useFile(id: string | number, params: Record<string, any> | undef
         () => axios.get<ServerGetResponse<ApiFileInterface>>(`/files/${id}`, { params: params })
     );
 
-    let returnData : ApiFileInterface | undefined = undefined;
-    if (fullData?.data) {
-        returnData = fullData.data.data;
-    }
+    const returnData : ApiFileInterface | undefined = fullData?.data.data || undefined;
 
     return {
         file: returnData,
@@ -26,13 +23,10 @@ export function useFile(id: string | number, params: Record<string, any> | undef
 export function useFiles(id: string | number) {
     const { data: fullData, error, isLoading, isFetching } = useQuery(
         ['file', id],
-        () => axios.get<ServerIndexResponse<ApiFileInterface>>(`/files`)
+        () => axios.get<ServerIndexResponse<ApiFileInterface[]>>(`/files`)
     );
 
-    let returnData : ApiFileInterface[] | undefined = undefined;
-    if (fullData?.data) {
-        returnData = fullData.data.data;
-    }
+    const returnData : ApiFileInterface[] | undefined = fullData?.data.data || undefined;
 
     return {
         files: returnData,

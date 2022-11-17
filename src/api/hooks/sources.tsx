@@ -13,13 +13,10 @@ interface SourceIndex {
 function useSources() : SourceIndex {
     const { data: fullData, error, isLoading, isFetching } = useQuery(
         'sources',
-        () => axios.get<ServerIndexResponse<ApiSourceInterface>>('/sources')
+        () => axios.get<ServerIndexResponse<ApiSourceInterface[]>>('/sources')
     );
 
-    let returnData : ApiSourceInterface[] | undefined = undefined;
-    if (fullData?.data) {
-        returnData = fullData.data.data;
-    }
+    const returnData : ApiSourceInterface[] | undefined = fullData?.data.data || undefined;
 
     return {
         sources: returnData,

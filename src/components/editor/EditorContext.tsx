@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {AnySelection, ExtendedBoundingBlock} from "./EditorViewer.utils";
+import {AnySelection, BoundingBlock} from "./EditorViewer.utils";
 import {RelationValue} from "../../utils/enums";
 
 export interface FlowData {

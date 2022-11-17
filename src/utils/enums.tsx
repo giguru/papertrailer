@@ -12,6 +12,7 @@ enum RelationValue {
 interface RelationOption {
     value: RelationValue
     label: string,
+    labelInfix?: string
     optionGroup: 'positive' | 'negative' | 'neutral',
     directional: boolean
 }
@@ -37,7 +38,7 @@ const relationOptions: Record<RelationValue, RelationOption> = {
     },
     [RelationValue.Sources]: {
         value: RelationValue.Sources,
-        label: 'Sources',
+        label: 'Is a source for',
         optionGroup: 'positive',
         directional: true,
     },

@@ -4,7 +4,6 @@ import styles from './SearchInput.module.scss';
 import {useQuery} from "react-query";
 import axios from "axios";
 import {ServerIndexResponse} from "../../api/api";
-import {ApiFileInterface} from "../../api/models";
 
 
 interface SearchInputProps {
@@ -17,7 +16,7 @@ function SearchInput<TItem extends Record<string, string>>({ placeholder, onSele
     const id = useId();
     const { data: fullData, error, isLoading, isFetching } = useQuery(
         [endpoint, id],
-        () => axios.get<ServerIndexResponse<TItem>>(endpoint)
+        () => axios.get<ServerIndexResponse<TItem[]>>(endpoint)
     );
     const [query, setQuery] = useState('');
 

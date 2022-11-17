@@ -12,8 +12,9 @@ import RadioButtonsGroup from "../components/forms/RadioButtonsGroup";
 import Button from "../components/button/Button";
 import {useParams} from "react-router";
 import {relationOptions, RelationValue} from "../utils/enums";
-import RelationPopUp from "../components/editor/RelationPopUp";
+import RelationPopUp, {Direction} from "../components/editor/RelationPopUp";
 import PdfjsViewer from "../components/editor/mozilla-pdfjs-based/PdfjsViewer";
+import Snippet from "../components/snippets/Snippet";
 
 const mainViewEditorId: string = 'main';
 const otherViewEditorId: string = 'other';
@@ -28,7 +29,7 @@ interface RouteParams extends Record<string, string> {
 
 function MainView() {
     const { id } = useParams<RouteParams>();
-    const { openView } = useContext(ViewSplitterContext);
+    const { openView, activeIndex } = useContext(ViewSplitterContext);
     const { setSelectedBoundingBoxes, addFlowData } = useEditorContext();
     const { clearSelectedContent } = useEditorViewerContext();
     const initialValues: MainViewFlowData = { relation: RelationValue.Relates };
@@ -42,6 +43,7 @@ function MainView() {
             <LintMenu />
             <EditorViewer
                 fileId={id}
+                isActive={activeIndex === 0}
                 Component={({ selection }) => (
                     <SelectionPopUp
                         selection={selection}
@@ -59,17 +61,17 @@ function MainView() {
                         >
                             {(formikProps) => (
                                 <form onSubmit={formikProps.handleSubmit}>
-                                    <code>
-                                        {selection.text}
-                                    </code>
-                                    <RadioButtonsGroup.Formik
-                                        label="Relation"
-                                        options={Object.values(relationOptions)}
-                                        name="relation"
-                                    />
+                                    <Snippet text={selection.text} />
+                                    <div>
+                                        <RadioButtonsGroup.Formik
+                                            label="Relation"
+                                            options={Object.values(relationOptions)}
+                                            name="relation"
+                                        />
+                                    </div>
                                     <Button
-                                        onClick={async (e) => {
-                                            openView(e, 1);
+                                        onClick={async () => {
+                                            openView(1);
                                             await formikProps.submitForm();
                                         }}
                                     >
@@ -87,37 +89,54 @@ function MainView() {
 
 function OtherView() {
     const { id } = useParams<RouteParams>();
-    const [selectedItem, setSelectedItem] = useState<{id: string, filename: string} | undefined>();
-    const { selectedBoundingBoxesPerEditor, flowData, setSelectedBoundingBoxes } = useContext(EditorContext);
-    const { clearSelectedContent } = useEditorViewerContext();
+    const { openView } = useContext(ViewSplitterContext);
+    const { selectedBoundingBoxesPerEditor, flowData, setSelectedBoundingBoxes } = useEditorContext();
+    const { clearSelectedContent, setSelectedContent } = useEditorViewerContext();
+    const [selectedSource, setSelectedSource] = useState<{id: number} | undefined>();
 
-    if (!selectedItem) {
-        return <SearchDocumentView onSelect={setSelectedItem} />;
+    const selectionA = selectedBoundingBoxesPerEditor[mainViewEditorId];
+    const cancel = () => {
+        openView(0)
+        clearSelectedContent()
+    }
+
+    if (!selectedSource) {
+        return (
+            <SearchDocumentView
+                selection={selectionA}
+                onSelect={(source, newSelection) => {
+                    setSelectedSource(source);
+                    if (newSelection) {
+                        setSelectedContent(newSelection);
+                    }
+                }}
+                close={cancel}
+            />
+        );
     }
 
     if (!flowData.relation) {
         return <span>No relation was selected</span>;
     }
-    const selectionA = selectedBoundingBoxesPerEditor[mainViewEditorId];
 
     return (
         <>
             <LintMenu
                 preChildren={(
                     <>
-                        <Button onClick={() => setSelectedItem(undefined)}>Choose other document</Button>
+                        <Button onClick={() => setSelectedSource(undefined)}>Choose other document</Button>
                     </>
                 )}
             />
             {selectionA
                 ? (
                     <EditorViewer
-                        fileId={selectedItem.id}
+                        fileId={selectedSource.id}
                         Component={({ selection: selectionB }) => {
                             const initialFormData = {
-                                sources: {
-                                    _ids: [selectedItem.id, id],
-                                },
+                                sourceA: selectedSource.id,
+                                sourceB: id,
+                                direction: Direction.FORWARDS,
                                 relation: flowData.relation,
                                 file_bounding_blocks: {
                                     _ids: [],
@@ -148,6 +167,7 @@ function OtherView() {
                                         onSuccess={() => {
                                             clearSelectedContent()
                                             setSelectedBoundingBoxes(mainViewEditorId, undefined);
+                                            cancel();
                                         }}
                                     />
                                 </SelectionPopUp>

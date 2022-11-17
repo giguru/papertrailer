@@ -1,5 +1,5 @@
 import React, {useContext, useMemo} from 'react';
-import {AnySelection, ExtendedBoundingBlock} from "./EditorViewer.utils";
+import {AnySelection, BoundingBlock} from "./EditorViewer.utils";
 import ErrorBoundary from "./../ErrorBoundary";
 import FloatingPane from "../FloatingPane";
 import {useEditorViewerContext} from "./EditorViewerContext";

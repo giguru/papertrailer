@@ -25,11 +25,10 @@ export interface SelectionBoxContextProps {
 }
 
 export type PdfJSBoxSelection = PdfJSSelectionBox & SelectionBoxContextProps;
-export type ExtendedBoundingBlock = BoundingBlock & SelectionBoxContextProps
 
-export interface BoundingBoxSelection {
+export type BoundingBoxSelection = SelectionBoxContextProps & {
     text: string,
-    boundingBlocks: ExtendedBoundingBlock[],
+    boundingBlocks: BoundingBlock[],
 }
 
 export type AnySelection = BoundingBoxSelection | PdfJSBoxSelection

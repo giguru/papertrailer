@@ -1,10 +1,11 @@
-import React, { useId } from 'react';
+import React, {useId, useState} from 'react';
 import { useMutation, useQuery } from "react-query";
 import { Formik, FormikHelpers, FormikValues } from "formik";
-import axios from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import Loading from "../loading/Loading";
 import Alert from "@mui/material/Alert";
 import {FormikProps} from "formik/dist/types";
+import {ServerResponse} from "../../api/api";
 
 interface InnerFormInterface extends FormikProps<any> {
     children: React.ReactNode;
@@ -22,25 +23,33 @@ interface FormInput {
     isNew: boolean;
     endpoint: string;
     children: React.ReactNode,
-    onSuccess?: Function,
+    onSuccess?: () => void,
     initialFormData?: Record<string, any>,
 }
 
-const Form: React.FC<FormInput> = <TInputObject extends FormikValues>({
+const Form: React.FC<FormInput> = <TInputObject extends FormikValues, TResponseData = TInputObject>({
     isNew,
     endpoint,
     children,
     onSuccess,
     initialFormData = {},
 }: FormInput) => {
+    const [submitError, setSubmitError] = useState('')
     const id = useId();
     const onSuccessCallback = () => {
         if (typeof onSuccess === 'function') {
             onSuccess();
         }
     }
-    const putCall = (data: TInputObject) => axios.put(endpoint, data).then(onSuccessCallback);
-    const postCall = (data: TInputObject) => axios.post(endpoint, data).then(onSuccessCallback);
+    const catchApiError = (e: AxiosError<ServerResponse>) => {
+        setSubmitError(e.response?.data?.message || e.message)
+    }
+    const putCall = (data: TInputObject) => axios.put<TInputObject, AxiosResponse<ServerResponse<TResponseData>>>(endpoint, data)
+        .then(onSuccessCallback)
+        .catch(catchApiError);
+    const postCall = (data: TInputObject) => axios.post<TInputObject, AxiosResponse<ServerResponse<TResponseData>>>(endpoint, data)
+        .then(onSuccessCallback)
+        .catch(catchApiError);
 
     const {
         isLoading,
@@ -81,6 +90,7 @@ const Form: React.FC<FormInput> = <TInputObject extends FormikValues>({
             {(formikProps) => (
                 <InnerForm {...formikProps}>
                     {children}
+                    {submitError && <Alert severity="error">{submitError}</Alert>}
                 </InnerForm>
             )}
         </Formik>
