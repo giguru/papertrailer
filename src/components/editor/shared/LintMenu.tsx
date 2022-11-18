@@ -2,6 +2,8 @@ import React from 'react';
 import {useEditorViewerContext} from "../EditorViewerContext";
 import styles from './LintMenu.module.scss';
 import Button from "./../../button/Button";
+import ZoomIn from "@mui/icons-material/ZoomIn";
+import ZoomOut from "@mui/icons-material/ZoomOut";
 
 interface LintMenuProps {
     preChildren?: React.ReactNode,
@@ -10,12 +12,21 @@ interface LintMenuProps {
 
 function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
     const { scaler, setScalar } = useEditorViewerContext();
+
     return (
         <div className={styles.LintMenu}>
             {preChildren}
-            <Button onClick={() => setScalar(Math.min(scaler + 0.2, 2.0))}>Bigger</Button>
-            {Math.round(scaler * 100) / 100}
-            <Button onClick={() => setScalar(Math.max(scaler - 0.2, 0.1))}>Smaller</Button>
+            <div className={styles.ZoomComponent}>
+                <Button onClick={() => setScalar(Math.max(scaler - 0.25, 0.25))} className={styles.ZoomButton}>
+                    <ZoomOut />
+                </Button>
+                <div className={styles.ZoomAmount}>
+                    {Math.round(scaler * 100)}%
+                </div>
+                <Button onClick={() => setScalar(Math.min(scaler + 0.25, 3.0))} className={styles.ZoomButton}>
+                    <ZoomIn />
+                </Button>
+            </div>
             {afterChildren}
         </div>
     );

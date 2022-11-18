@@ -1,5 +1,5 @@
 import {PDFPageProxy} from "pdfjs-dist";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import * as PDFJS from "pdfjs-dist";
 import styles from "./PdfjsViewer.module.scss";
 import {cumulativeOffset, PdfJSSelectionBox } from "../EditorViewer.utils";
@@ -74,10 +74,10 @@ export default function PdfJsPage({ page, pageIndex, fileId }: PdfJSPageProps) {
                     });
                 });
         }
+
         return () => {
-            // page.cleanup()
         }
-    }, [page, setSelectedContent])
+    }, [page, setSelectedContent, scaler])
 
     const onMouseUp = useCallback(() => {
         let selObj : Selection|null = null;
