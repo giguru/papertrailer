@@ -1,54 +1,53 @@
 
 
-.RelationsInterface {
-    .Relation {
+.Relation {
+    position: absolute;
+    left: 0;
+    width: 100%;
+
+    .Indicator {
         position: absolute;
-        left: 0;
+        border-radius: 6px;
+        width: 6px;
+        top: 0;
+        cursor: pointer;
+        border: 1px solid #fff;
+        box-shadow: 1px 1px 4px rgba(100, 100, 100, 0.3);
+        min-height: 10px;
 
-        .Indicator {
-            position: absolute;
-            border-radius: 6px;
-            width: 6px;
-            top: 0;
-            cursor: pointer;
-            border: 1px solid #fff;
-            box-shadow: 1px 1px 4px rgba(100, 100, 100, 0.3);
-            min-height: 10px;
-
-            &.OpenIndicator {
-                transform: scale(1.5);
-            }
-
-            .RelationType {
-                position: absolute;
-                display: none;
-                top: -20px;
-            }
-            &:hover .RelationType {
-                display: block;
-                text-shadow: 1px 1px 3px #fff;
-                white-space: nowrap;
-            }
+        &.OpenIndicator {
+            transform: scale(1.5);
         }
 
+        .RelationType {
+            position: absolute;
+            display: none;
+            top: -20px;
+        }
+        &:hover .RelationType {
+            display: block;
+            text-shadow: 1px 1px 3px #fff;
+            white-space: nowrap;
+        }
+    }
+
+    .ContentIndicator {
+        position: absolute;
+        top: 0;
+        border-radius: 5px;
+        opacity: 0;
+    }
+
+    .ContentModal {
+        position: absolute;
+        background-color: #fff;
+        padding: 5px;
+        border-radius: 10px;
+    }
+
+    &:hover {
         .ContentIndicator {
-            position: absolute;
-            top: 0;
-            border-radius: 5px;
-            opacity: 0;
-        }
-
-        .ContentModal {
-            position: absolute;
-            background-color: #fff;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        &:hover {
-            .ContentIndicator {
-                opacity: 0.3;
-            }
+            opacity: 0.3;
         }
     }
 }

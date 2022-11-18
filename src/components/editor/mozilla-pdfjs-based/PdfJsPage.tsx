@@ -6,7 +6,7 @@ import {cumulativeOffset, PdfJSSelectionBox } from "../EditorViewer.utils";
 import {useEditorViewerContext} from "../EditorViewerContext";
 import InteractionInterface from "./InteractionInterface";
 
-function convertSelection(selection: Selection, canvas: HTMLCanvasElement): PdfJSSelectionBox {
+function convertSelection(selection: Selection, canvas: HTMLCanvasElement, scaler: number): PdfJSSelectionBox {
     const imageContainerOffset = canvas ? cumulativeOffset(canvas) : undefined;
     const range = selection.getRangeAt(0);
     const { left, top } = range.getBoundingClientRect()
@@ -15,14 +15,14 @@ function convertSelection(selection: Selection, canvas: HTMLCanvasElement): PdfJ
     //   2 words, the bounding box is now around all 10 words.
     return {
         text: selection?.toString() || '',
-        x: left + window.scrollX - (imageContainerOffset?.left || 0),
-        y: top + window.scrollY - (imageContainerOffset?.top || 0),
-        width: (range.endContainer.parentElement?.offsetLeft || 0)
+        x: (left + window.scrollX - (imageContainerOffset?.left || 0)) / scaler,
+        y: (top + window.scrollY - (imageContainerOffset?.top || 0)) / scaler,
+        width: ((range.endContainer.parentElement?.offsetLeft || 0)
             + (range.endContainer.parentElement?.offsetWidth || 0)
-            - (range.startContainer.parentElement?.offsetLeft || 0),
-        height: (range.endContainer.parentElement?.offsetTop || 0)
+            - (range.startContainer.parentElement?.offsetLeft || 0)) / scaler,
+        height: ((range.endContainer.parentElement?.offsetTop || 0)
             + (range.endContainer.parentElement?.offsetHeight || 0)
-            - (range.startContainer.parentElement?.offsetTop || 0),
+            - (range.startContainer.parentElement?.offsetTop || 0)) / scaler,
         originalSelection: selection
     }
 }
@@ -90,7 +90,7 @@ export default function PdfJsPage({ page, pageIndex, fileId }: PdfJSPageProps) {
 
         if (selObj instanceof Selection && selObj.toString() && canvasRef.current) {
             setSelectedContent({
-                ...convertSelection(selObj, canvasRef.current),
+                ...convertSelection(selObj, canvasRef.current, scaler),
                 fileId: fileId,
                 selected: true,
                 pageIndex: pageIndex,

@@ -27,10 +27,6 @@ const fieldNames = {
     relation: 'relation',
 }
 
-const parts = {
-    end: '75%',
-}
-
 function InnerForm({ selectionA, selectionB }: { selectionA: AnySelection, selectionB: AnySelection }) {
     const [{ value: directionValue },,{ setValue: setDirection}] = useField(fieldNames.direction);
     const [{ value: relationValue }] = useField(fieldNames.relation);

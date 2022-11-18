@@ -10,7 +10,7 @@ const relevantForFile = (file: ApiFileInterface | undefined, fileId: number) => 
 type ExtendedApiRelationInterface = ApiRelationInterface & { indent: number }
 
 function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface }) {
-    const { file } = useEditorViewerContext()
+    const { file, scaler } = useEditorViewerContext()
     const [isOpen, setOpenRelation] = useState(false)
     const open = () => setOpenRelation(true)
 
@@ -23,24 +23,29 @@ function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface 
         <Fragment>
             {fileBoundingBlocks.map((fbb) => {
                 const { y, height, x, width, id, file_id: fileId } = fbb;
-                if (!relevantForFile(file, fileId)) return null;
+                if (!file || !relevantForFile(file, fileId)) return null;
 
                 return (
                     <div
                         className={styles.Relation}
-                        style={{ top: y }}
+                        style={{ top: y * scaler }}
                         key={id}
                     >
                         <div
                             className={`${styles.Indicator} ${isOpen ? styles.OpenIndicator: ''}`}
-                            style={{ height, backgroundColor: color, color, left: `${-20 - relation.indent * 8}px` }}
+                            style={{ height: height * scaler, backgroundColor: color, color, left: `${-20 - relation.indent * 8}px` }}
                             onClick={open}
                         >
                             <span className={styles.RelationType}>{relationOptions[relation.relation].label}</span>
                         </div>
                         <div
                             className={styles.ContentIndicator}
-                            style={{ left: x, height, width, backgroundColor: color }}
+                            style={{
+                                left: x * scaler,
+                                width: width * scaler,
+                                height: height * scaler,
+                                backgroundColor: color
+                            }}
                             onClick={open}
                         />
                         {blockA && blockB && isOpen && (
@@ -110,8 +115,8 @@ export default function RelationsInterface({ relations }: { relations: ApiRelati
     );
 
     return (
-        <span className={styles.RelationsInterface}>
+        <>
             {sortedRelations.map(relation => <RelationDisplay relation={relation} key={relation.id} />)}
-        </span>
+        </>
     )
 }

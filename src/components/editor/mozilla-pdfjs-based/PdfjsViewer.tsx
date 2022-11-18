@@ -6,6 +6,7 @@ import PdfJsPage from "./PdfJsPage";
 import {useSourceRelations} from "../../../api/hooks/relations";
 import {ApiFileInterface, ApiRelationInterface} from "../../../api/models";
 import RelationsPageInterface from "../shared/RelationsInterface";
+import {useEditorViewerContext} from "../EditorViewerContext";
 
 // We import this here so that it's only loaded during client-side rendering.
 
@@ -14,6 +15,7 @@ const examplePdfs: Record<number, string> = {
     2: '/reproducibility-is-a-process.pdf',
 };
 
+
 /**
  * Render a PDF and all its pages.
  *
@@ -21,6 +23,7 @@ const examplePdfs: Record<number, string> = {
  * @constructor
  */
 function PdfjsViewer({ file, PageChildComponent }: { file: ApiFileInterface, PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
+    const { scaler } = useEditorViewerContext()
     const fileId = file.id;
     const { relations } = useSourceRelations(fileId)
     const [pdf, setPdf] = useState<PDFDocumentProxy | undefined>()
@@ -66,21 +69,24 @@ function PdfjsViewer({ file, PageChildComponent }: { file: ApiFileInterface, Pag
 
     return (
         <>
-            {pages.map((page, pageIndexNumber) => (
-                <PageContainer key={pageIndexNumber}>
-                    <PdfJsPage
-                        page={page}
-                        pageIndex={pageIndexNumber}
-                        fileId={fileId}
-                    />
-                    {relationsPerPageIndex[pageIndexNumber] && (
-                        <RelationsPageInterface
-                            relations={Object.values(relationsPerPageIndex[pageIndexNumber])}
+            {pages.map((page, pageIndexNumber) => {
+                const viewport = page.getViewport({ scale: scaler });
+                return (
+                    <PageContainer key={pageIndexNumber} style={{ height: viewport.height }}>
+                        <PdfJsPage
+                            page={page}
+                            pageIndex={pageIndexNumber}
+                            fileId={fileId}
                         />
-                    )}
-                    {PageChildComponent && <PageChildComponent pageIndex={pageIndexNumber} />}
-                </PageContainer>
-            ))}
+                        {relationsPerPageIndex[pageIndexNumber] && (
+                            <RelationsPageInterface
+                                relations={Object.values(relationsPerPageIndex[pageIndexNumber])}
+                            />
+                        )}
+                        {PageChildComponent && <PageChildComponent pageIndex={pageIndexNumber} />}
+                    </PageContainer>
+                )
+            })}
         </>
     );
 }

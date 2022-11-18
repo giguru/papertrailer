@@ -154,7 +154,7 @@ function OtherView() {
                                 <SelectionPopUp
                                     selection={selectionB}
                                     onCancel={clearSelectedContent}
-                                    header="Relatie aanmaken"
+                                    header="Create relation"
                                 >
                                     <RelationPopUp
                                         selectionA={selectionA}
