@@ -7,13 +7,12 @@ import ViewSplitter from "../components/layout/ViewSplitter";
 import SearchDocumentView from "./views/SearchDocumentView";
 import SelectionPopUp from "../components/editor/BoundingBoxesSelectionPopUp";
 import {ViewSplitterContext} from "../components/layout/ViewSplitter.utils";
-import EditorContext, {EditorContextProvider, FlowData, useEditorContext} from "../components/editor/EditorContext";
+import {EditorContextProvider, FlowData, useEditorContext} from "../components/editor/EditorContext";
 import RadioButtonsGroup from "../components/forms/RadioButtonsGroup";
 import Button from "../components/button/Button";
 import {useParams} from "react-router";
 import {relationOptions, RelationValue} from "../utils/enums";
 import RelationPopUp, {Direction} from "../components/editor/RelationPopUp";
-import PdfjsViewer from "../components/editor/mozilla-pdfjs-based/PdfjsViewer";
 import Snippet from "../components/snippets/Snippet";
 
 const mainViewEditorId: string = 'main';
@@ -75,7 +74,7 @@ function MainView() {
                                             await formikProps.submitForm();
                                         }}
                                     >
-                                        Link other document
+                                        Link to other document
                                     </Button>
                                 </form>
                             )}
@@ -95,6 +94,7 @@ function OtherView() {
     const [selectedSource, setSelectedSource] = useState<{id: number} | undefined>();
 
     const selectionA = selectedBoundingBoxesPerEditor[mainViewEditorId];
+
     const cancel = () => {
         openView(0)
         clearSelectedContent()
@@ -128,7 +128,7 @@ function OtherView() {
                     </>
                 )}
             />
-            {selectionA
+            {selectionA && flowData.relation
                 ? (
                     <EditorViewer
                         fileId={selectedSource.id}
@@ -136,11 +136,7 @@ function OtherView() {
                             const initialFormData = {
                                 sourceA: selectedSource.id,
                                 sourceB: id,
-                                direction: Direction.FORWARDS,
-                                relation: flowData.relation,
-                                file_bounding_blocks: {
-                                    _ids: [],
-                                },
+                                relation: flowData.relation || RelationValue.Relates,
                             }
                             /* TODO fix saving
                             if ("boundingBlocks" in selectionB) {
@@ -165,7 +161,6 @@ function OtherView() {
                                         selectionB={selectionB}
                                         initialFormData={initialFormData}
                                         onSuccess={() => {
-                                            clearSelectedContent()
                                             setSelectedBoundingBoxes(mainViewEditorId, undefined);
                                             cancel();
                                         }}

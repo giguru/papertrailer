@@ -1,0 +1,117 @@
+import {ApiFileBoundingBlockInterface, ApiFileInterface, ApiRelationInterface} from "../../../api/models";
+import React, {Fragment, useMemo, useState} from "react";
+import styles from './RelationsInterface.module.scss';
+import {relationOptions} from "../../../utils/enums";
+import RelationPopUp, {fileBoundingBlockToSelection} from "../RelationPopUp";
+import {useEditorViewerContext} from "../EditorViewerContext";
+import FloatingPane from "../../FloatingPane";
+
+const relevantForFile = (file: ApiFileInterface | undefined, fileId: number) => file && file.id === fileId
+type ExtendedApiRelationInterface = ApiRelationInterface & { indent: number }
+
+function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface }) {
+    const { file } = useEditorViewerContext()
+    const [isOpen, setOpenRelation] = useState(false)
+    const open = () => setOpenRelation(true)
+
+    const color = relationOptions[relation.relation].color;
+    const fileBoundingBlocks = relation.file_bounding_blocks || [];
+    const blockA = fileBoundingBlocks.find(f => f.pivot?.index === 0);
+    const blockB = fileBoundingBlocks.find(f => f.pivot?.index === 1);
+
+    return (
+        <Fragment>
+            {fileBoundingBlocks.map((fbb) => {
+                const { y, height, x, width, id, file_id: fileId } = fbb;
+                if (!relevantForFile(file, fileId)) return null;
+
+                return (
+                    <div
+                        className={styles.Relation}
+                        style={{ top: y }}
+                        key={id}
+                    >
+                        <div
+                            className={`${styles.Indicator} ${isOpen ? styles.OpenIndicator: ''}`}
+                            style={{ height, backgroundColor: color, color, left: `${-20 - relation.indent * 8}px` }}
+                            onClick={open}
+                        >
+                            <span className={styles.RelationType}>{relationOptions[relation.relation].label}</span>
+                        </div>
+                        <div
+                            className={styles.ContentIndicator}
+                            style={{ left: x, height, width, backgroundColor: color }}
+                            onClick={open}
+                        />
+                        {blockA && blockB && isOpen && (
+                            <FloatingPane
+                                onClose={() => setOpenRelation(false)}
+                                position={{ top: 30, left: -350 }}
+                                className={styles.ContentModal}
+                            >
+                                <RelationPopUp
+                                    relationId={relation.id}
+                                    selectionA={fileBoundingBlockToSelection(blockA)}
+                                    selectionB={fileBoundingBlockToSelection(blockB)}
+                                    initialFormData={{
+                                        ...relation
+                                    }}
+                                />
+                            </FloatingPane>
+                        )}
+                    </div>
+                );
+            })}
+        </Fragment>
+    )
+}
+
+/**
+ * Display existing relations in the editor, so users can modify/comment/etc.
+ *
+ * @param relations Relevant relations for a page.
+ * @constructor
+ */
+export default function RelationsInterface({ relations }: { relations: ApiRelationInterface[] }) {
+    const { file } = useEditorViewerContext()
+
+    const sortedRelations = useMemo(() => {
+            let inWindow: Array<ApiRelationInterface & { top: number, height: number }> = [];
+
+            const sorted = relations
+                .map((r) => {
+                    const fbbs = r.file_bounding_blocks?.filter((fbb) => relevantForFile(file, fbb.file_id)) || [];
+                    let minFbb: ApiFileBoundingBlockInterface = fbbs[0];
+                    fbbs.forEach((fbb) => {
+                        if (fbb.y < minFbb.y) minFbb = fbb
+                    })
+                    return {
+                        ...r,
+                        top: minFbb.y,
+                        height: minFbb.height,
+                    }
+                })
+                .sort((a, b) => {
+                    if (a.top === b.top) return 0;
+                    return a.top > b.top ? 1 : 1;
+                });
+
+            return sorted.map<ExtendedApiRelationInterface>((r) => {
+                // Remove all in window
+                inWindow = inWindow.filter((windowR) =>  r.top < windowR.top + windowR.height)
+
+                // Add current
+                inWindow.push(r);
+
+                return {...r, indent: inWindow.length - 1}
+            })
+        },
+        [file, relations],
+    );
+
+    return (
+        <span className={styles.RelationsInterface}>
+            {sortedRelations.map(relation => <RelationDisplay relation={relation} key={relation.id} />)}
+        </span>
+    )
+}

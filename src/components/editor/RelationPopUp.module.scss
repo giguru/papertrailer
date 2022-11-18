@@ -7,17 +7,16 @@ $height: 43px;
     background-color: #efefef;
     border-radius: 10px;
     transition: all 0.5s;
-    position: absolute;
+    position: relative;
     height: $height;
     box-sizing: border-box;
-    width: 100%;
+    min-width: 100%;
     margin: 0;
     text-align: center;
 }
 
 .RelationInputsContainer {
     display: flex;
-    position: absolute;
     align-items: center;
     height: $height * 2;
     width: 100%;
@@ -25,6 +24,6 @@ $height: 43px;
 .RelationDefinitionContainer {
     position: relative;
     height: $height * 4;
-    width: 300px;
+    min-width: 300px;
     margin-bottom: 7px;
 }

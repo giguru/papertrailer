@@ -4,7 +4,6 @@ import {
     cumulativeOffset,
     DragData,
     dragEventToDragData, DragWindow,
-    BoundingBlock,
     inDragWindow,
     toPercentage
 } from "../EditorViewer.utils";
@@ -61,6 +60,7 @@ function InteractionInterface({ file }: { file: ApiFileInterface }) {
                     setSelectedContent({
                         selected: true,
                         fileId: file.id,
+                        pageIndex: 0, // TODO it is not 0
                         text: boundingBoxesToText(selectedBoxes),
                         boundingBlocks: selectedBoxes,
                     });

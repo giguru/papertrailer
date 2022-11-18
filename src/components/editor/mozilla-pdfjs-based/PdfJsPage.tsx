@@ -27,7 +27,13 @@ function convertSelection(selection: Selection, canvas: HTMLCanvasElement): PdfJ
     }
 }
 
-export default function PdfJsPage({ page }: { page: PDFPageProxy }) {
+interface PdfJSPageProps {
+    page: PDFPageProxy
+    pageIndex: number
+    fileId: number
+}
+
+export default function PdfJsPage({ page, pageIndex, fileId }: PdfJSPageProps) {
     const { setSelectedContent, clearSelectedContent, scaler } = useEditorViewerContext()
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const textLayerRef = useRef<HTMLDivElement | null>(null);
@@ -83,12 +89,12 @@ export default function PdfJsPage({ page }: { page: PDFPageProxy }) {
         }
 
         if (selObj instanceof Selection && selObj.toString() && canvasRef.current) {
-            const selection = {
+            setSelectedContent({
                 ...convertSelection(selObj, canvasRef.current),
-                fileId: 1, // Todo not hardcode
+                fileId: fileId,
                 selected: true,
-            }
-            setSelectedContent(selection)
+                pageIndex: pageIndex,
+            })
         } else {
             clearSelectedContent();
         }
@@ -104,7 +110,7 @@ export default function PdfJsPage({ page }: { page: PDFPageProxy }) {
                 style={textLayerStyle}
                 onMouseUp={onMouseUp}
             />
-            <InteractionInterface />
+            <InteractionInterface pageIndex={pageIndex} />
         </>
     )
 }

@@ -32,8 +32,9 @@ const Form: React.FC<FormInput> = <TInputObject extends FormikValues, TResponseD
     endpoint,
     children,
     onSuccess,
-    initialFormData = {},
+    initialFormData = undefined,
 }: FormInput) => {
+    const shouldFetch = !initialFormData;
     const [submitError, setSubmitError] = useState('')
     const id = useId();
     const onSuccessCallback = () => {
@@ -59,7 +60,7 @@ const Form: React.FC<FormInput> = <TInputObject extends FormikValues, TResponseD
     } = useQuery(id,
         () => axios.get(endpoint).then(res => res.data),
         {
-            enabled: !isNew
+            enabled: !isNew && shouldFetch
         });
 
     const mutationFunction = isNew ? postCall : putCall;

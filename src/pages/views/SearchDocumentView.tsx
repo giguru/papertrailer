@@ -43,7 +43,7 @@ function SearchDocumentView<T extends Record<string, any>>(
                 <DividerWithText text="OR" />
                 <h4>Link to another snippet</h4>
                 {snippets.length
-                    ? snippets.map((s) => <Snippet onClick={() => onSelect({ id: s.fileId }, s)} text={s.text} />)
+                    ? snippets.map((s, sIndex) => <Snippet key={sIndex} onClick={() => onSelect({ id: s.fileId }, s)} text={s.text} />)
                     : <p>No snippets on Snippet board</p>}
 
                 {selection && (

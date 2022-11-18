@@ -1,13 +1,16 @@
 import React, {useContext, useEffect, useId, useState} from 'react';
 import { AnySelection } from "./EditorViewer.utils";
 import {useEditorContext} from "./EditorContext";
+import {ApiFileInterface} from "../../api/models";
 
 interface EditorViewerContextProps {
     scaler: number,
     setScalar: (scale: number) => void,
     setSelectedContent: (selection: AnySelection) => void,
-    selectedContent: AnySelection | undefined,
+    selectedContent?: AnySelection,
     clearSelectedContent: () => void,
+    file?: ApiFileInterface,
+    setFile: (file: ApiFileInterface | undefined) => void,
 }
 export const initialState : EditorViewerContextProps = {
     scaler: 1,
@@ -15,6 +18,8 @@ export const initialState : EditorViewerContextProps = {
     setSelectedContent: console.error,
     selectedContent: undefined,
     clearSelectedContent: () => {},
+    file: undefined,
+    setFile: () => {},
 }
 
 const EditorViewerContext = React.createContext<EditorViewerContextProps>(initialState);
@@ -27,12 +32,13 @@ export function useEditorViewerContext() {
 
 export function EditorViewerContextProvider({ children, id }: { children: React.ReactNode, id: string }) {
     const [scaler, setScalar] = useState<number>(initialState.scaler);
+    const [file, setFile] = useState<ApiFileInterface | undefined>()
     const { setSelectedBoundingBoxes, selectedBoundingBoxesPerEditor } = useEditorContext()
 
     const clearSelectedContent = () => setSelectedBoundingBoxes(id,undefined);
     useEffect(() => {
-        setSelectedBoundingBoxes(id, undefined)
         return () => {
+            // Clear selection upload unmounting
             clearSelectedContent();
         }
     }, [])
@@ -42,11 +48,13 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
             value={{
                 scaler,
                 setScalar,
-                selectedContent: selectedBoundingBoxesPerEditor[id],
+                selectedContent: selectedBoundingBoxesPerEditor[id] || undefined,
                 setSelectedContent: (s: AnySelection) => {
                     setSelectedBoundingBoxes(id, s)
                 },
                 clearSelectedContent,
+                file,
+                setFile,
             }}
         >
             {children}

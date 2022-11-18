@@ -6,9 +6,18 @@
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
-    white-space: nowrap;
 
+    .TextContainer {
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        white-space: nowrap;
+    }
+    .Link {
+        margin-left: 5px;
+    }
     .Text {
+        margin-right: 5px;
         display: inline-block;
         text-overflow: ellipsis;
         overflow: hidden;

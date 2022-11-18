@@ -19,7 +19,7 @@ const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
             {Array.isArray(sources) && (
                 <Table
                     rows={sources}
-                    linkBuilder={({ row: source }) => routes.editSource(source.id)}
+                    linkBuilder={({ row: source }) => routes.editFile(source.id)}
                     columns={[
                         { Header: 'Title', accessor: 'title' },
                         { Header: 'Created', accessor: 'created_at' },

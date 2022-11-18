@@ -1,9 +1,12 @@
 import {DragEvent} from "react";
+import {ApiFileBoundingBlockInterface} from "../../api/models";
 
 // Every type of editor must eventually yield a selection box. Do not export. Create extended classes instead.
 interface SelectionBox {
     text: string
+    // X position on the page
     x: number
+    // Y position on the page
     y: number
     width: number
     height: number
@@ -22,13 +25,14 @@ export interface PdfJSSelectionBox extends SelectionBox {
 export interface SelectionBoxContextProps {
     selected: boolean,
     fileId: number,
+    pageIndex: number,
 }
 
 export type PdfJSBoxSelection = PdfJSSelectionBox & SelectionBoxContextProps;
 
 export type BoundingBoxSelection = SelectionBoxContextProps & {
     text: string,
-    boundingBlocks: BoundingBlock[],
+    boundingBlocks: BoundingBlock[] | ApiFileBoundingBlockInterface[],
 }
 
 export type AnySelection = BoundingBoxSelection | PdfJSBoxSelection

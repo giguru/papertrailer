@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useFile} from "../../api/hooks/files";
-import {useEditorViewerContext} from "./EditorViewerContext";
+import {EditorViewerContextProvider, useEditorViewerContext} from "./EditorViewerContext";
 import { AnySelection } from "./EditorViewer.utils";
 import EditorViewerContainer from "./shared/EditorViewerContainer";
 import PdfjsViewer from "./mozilla-pdfjs-based/PdfjsViewer";
@@ -14,23 +14,35 @@ interface EditorViewerProps {
 
 // A single file viewer
 function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps) {
-    const { selectedContent } = useEditorViewerContext();
+    const { setFile } = useEditorViewerContext()
     const {
         file: fullData,
         isLoading,
         error,
-    } = useFile(fileId, { with: ['files', 'files.file_bounding_blocks']});
+    } = useFile(fileId, { with: ['files']});
 
-    // TODO after having loaded all the file data, wisely choose the value for the scaler in the EditorViewerContext.
+    useEffect(() => {
+        setFile(fullData)
+    }, [fullData])
+
+    const PageChildComponent = useCallback(
+        ({ pageIndex }: { pageIndex: number }) => Component && <ComponentRenderer Component={Component} pageIndex={pageIndex} />,
+        [Component],
+    );
+
     return (
         <EditorViewerContainer className={styles.PageCanvas}>
             {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
-            {isActive && <PdfjsViewer />}
-            {/*<BoundingBoxesViewer files={fullData?.files} Component={Component} />*/}
-            {selectedContent && Component
-                && <Component selection={selectedContent} />}
+            {isActive && fullData && (
+                <PdfjsViewer file={fullData} PageChildComponent={PageChildComponent} />
+            )}
         </EditorViewerContainer>
     );
+}
+
+function ComponentRenderer({ Component, pageIndex }: { Component: EditorViewerProps['Component'], pageIndex: number }) {
+    const { selectedContent } = useEditorViewerContext();
+    return  selectedContent && selectedContent.pageIndex === pageIndex ? <Component selection={selectedContent} /> : null;
 }
 
 export default EditorViewer;

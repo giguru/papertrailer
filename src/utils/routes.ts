@@ -1,4 +1,4 @@
 
 export const routes = {
-    editSource: (sourceId: number) => `/editor/${sourceId}`
+    editFile: (fileId: number) => `/editor/${fileId}`
 }

@@ -6,6 +6,8 @@ import {useField} from "formik";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import {groupByOptionGroup, OptionInterface} from "./utils";
+import styles from './RadioButtonsGroup.module.scss';
+
 
 type ValueType = string;
 
@@ -17,8 +19,13 @@ interface RadioButtonsGroupInterface<T = OptionInterface> {
     value?: ValueType,
 }
 
-const optionRenderer = ({ value, label }: { value: ValueType, label: string }) => (
-    <FormControlLabel value={value} key={value} control={<Radio />} label={label} />
+const optionRenderer = ({ value, label, color }: { value: ValueType, label: string, color?: string }) => (
+    <FormControlLabel
+        value={value}
+        key={value}
+        control={<Radio />}
+        label={<span style={{ borderBottomColor: color }} className={styles.OptionLabel}>{label}</span>}
+    />
 );
 
 function RadioButtonsGroupField({ name, options, label }: Omit<RadioButtonsGroupInterface, 'onChange' | 'value'>) {
@@ -55,9 +62,11 @@ function RadioButtonsGroup({ options, name, label, onChange, value = '' }: Radio
             >
             {optionGroups
                 ? Object.keys(optionGroups).map(label => (
-                    <span key={label}>
-                        <FormLabel>{label}</FormLabel>
-                        {optionGroups[label].map(optionRenderer)}
+                    <span key={label} className={styles.OptionGroup}>
+                        <FormLabel className={styles.GroupLabel}>{label}</FormLabel>
+                        <div>
+                            {optionGroups[label].map(optionRenderer)}
+                        </div>
                     </span>
                 ))
                 : // Simply list all options

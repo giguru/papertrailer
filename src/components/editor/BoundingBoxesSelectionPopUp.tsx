@@ -1,5 +1,5 @@
-import React, {useContext, useMemo} from 'react';
-import {AnySelection, BoundingBlock} from "./EditorViewer.utils";
+import React, {useMemo} from 'react';
+import {AnySelection} from "./EditorViewer.utils";
 import ErrorBoundary from "./../ErrorBoundary";
 import FloatingPane from "../FloatingPane";
 import {useEditorViewerContext} from "./EditorViewerContext";
@@ -34,6 +34,7 @@ function BoundingBoxesSelectionPopUp({ selection, children, onCancel, header }: 
         }
         return [0, 0]
     }, [selection]);
+
 
     return (
         <FloatingPane

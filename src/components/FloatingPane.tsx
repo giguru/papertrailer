@@ -11,16 +11,17 @@ interface FloatingPaneInterface {
     position: PositionInterface,
     onClose?: Function,
     header?: string,
+    className?: string,
 }
 
-function FloatingPane({ children, position, onClose, header }: FloatingPaneInterface) {
+function FloatingPane({ children, position, onClose, header, className }: FloatingPaneInterface) {
     const [open, setOpen] = useState(true);
     if (!open) {
         return null;
     }
     return (
         <div
-            className={styles.FloatingPane}
+            className={`${styles.FloatingPane} ${className}`}
             style={{
                 left: position.left,
                 top: position.top,
