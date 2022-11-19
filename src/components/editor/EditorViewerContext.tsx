@@ -11,6 +11,8 @@ interface EditorViewerContextProps {
     clearSelectedContent: () => void,
     file?: ApiFileInterface,
     setFile: (file: ApiFileInterface | undefined) => void,
+    sourcePanelOpen: boolean,
+    setSourcePanelOpen: (isOpen: boolean) => void
 }
 export const initialState : EditorViewerContextProps = {
     scaler: 1,
@@ -20,6 +22,8 @@ export const initialState : EditorViewerContextProps = {
     clearSelectedContent: () => {},
     file: undefined,
     setFile: () => {},
+    sourcePanelOpen: false,
+    setSourcePanelOpen: () => {},
 }
 
 const EditorViewerContext = React.createContext<EditorViewerContextProps>(initialState);
@@ -34,6 +38,7 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
     const [scaler, setScalar] = useState<number>(initialState.scaler);
     const [file, setFile] = useState<ApiFileInterface | undefined>()
     const { setSelectedBoundingBoxes, selectedBoundingBoxesPerEditor } = useEditorContext()
+    const [sourcePanelOpen, setSourcePanelOpen] = useState<EditorViewerContextProps['sourcePanelOpen']>(false);
 
     const clearSelectedContent = () => setSelectedBoundingBoxes(id,undefined);
     useEffect(() => {
@@ -55,6 +60,8 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
                 clearSelectedContent,
                 file,
                 setFile,
+                sourcePanelOpen,
+                setSourcePanelOpen,
             }}
         >
             {children}

@@ -3,7 +3,7 @@ import {PDFDocumentLoadingTask, PDFPageProxy} from "pdfjs-dist";
 import {PDFDocumentProxy} from "pdfjs-dist/types/src/display/api";
 import PageContainer from "../shared/PageContainer";
 import PdfJsPage from "./PdfJsPage";
-import {useSourceRelations} from "../../../api/hooks/relations";
+import {useFileRelations} from "../../../api/hooks/relations";
 import {ApiFileInterface, ApiRelationInterface} from "../../../api/models";
 import RelationsPageInterface from "../shared/RelationsInterface";
 import {useEditorViewerContext} from "../EditorViewerContext";
@@ -25,7 +25,7 @@ const examplePdfs: Record<number, string> = {
 function PdfjsViewer({ file, PageChildComponent }: { file: ApiFileInterface, PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
     const { scaler } = useEditorViewerContext()
     const fileId = file.id;
-    const { relations } = useSourceRelations(fileId)
+    const { relations } = useFileRelations(fileId)
     const [pdf, setPdf] = useState<PDFDocumentProxy | undefined>()
     const [pages, setPages] = useState<PDFPageProxy[]>([]);
 

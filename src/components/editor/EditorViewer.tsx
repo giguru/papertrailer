@@ -5,6 +5,8 @@ import { AnySelection } from "./EditorViewer.utils";
 import EditorViewerContainer from "./shared/EditorViewerContainer";
 import PdfjsViewer from "./mozilla-pdfjs-based/PdfjsViewer";
 import styles from "./mozilla-pdfjs-based/PdfjsViewer.module.scss";
+import {useEditorContext} from "./EditorContext";
+import FilePanel from "./FilePanel";
 
 interface EditorViewerProps {
     Component: React.FunctionComponent<{ selection: AnySelection }>,
@@ -31,12 +33,15 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
     );
 
     return (
-        <EditorViewerContainer className={styles.PageCanvas}>
-            {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
-            {isActive && fullData && (
-                <PdfjsViewer file={fullData} PageChildComponent={PageChildComponent} />
-            )}
-        </EditorViewerContainer>
+        <div className={styles.EditorViewerLayout}>
+            <EditorViewerContainer className={styles.PageCanvas}>
+                {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
+                {isActive && fullData && (
+                    <PdfjsViewer file={fullData} PageChildComponent={PageChildComponent} />
+                )}
+            </EditorViewerContainer>
+            <FilePanel fileId={fileId} />
+        </div>
     );
 }
 

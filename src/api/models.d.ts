@@ -1,23 +1,19 @@
 import {BoundingBlock} from "../components/editor/EditorViewer.utils";
 import {RelationValue} from "../utils/enums";
 
-export interface ApiSourceInterface {
-    title: string
-    id: number
+interface Timestamps {
     created_at: string,
     updated_at: string,
 }
 
-export interface ApiRelationInterface {
+export type ApiRelationInterface = Timestamps & {
     id: number
     title: string
     relation: RelationValue
     file_bounding_blocks?: ApiFileBoundingBlockInterface[]
-    created_at: string,
-    updated_at: string,
 }
 
-export interface ApiFileBoundingBlockInterface {
+export type ApiFileBoundingBlockInterface = Timestamps & {
     file_id: number,
     text: string
     x: number
@@ -31,12 +27,12 @@ export interface ApiFileBoundingBlockInterface {
         file_bounding_block_id: number
         index: number
     }
-    created_at: string,
-    updated_at: string,
 }
 
-export interface ApiFileInterface {
+export type ApiFileInterface = Timestamps & {
     id: number,
+    title: string,
+    description: string,
     filename: string,
     file_url: string,
     size_width: number,
@@ -45,6 +41,6 @@ export interface ApiFileInterface {
     processed_at: string | null,
     parent_file_id: number | null,
     files: undefined | ApiFileInterface[],
-    file_bounding_blocks: undefined | Array<BoundingBlock>
+    file_bounding_blocks: undefined | Array<BoundingBlock>,
 }
 

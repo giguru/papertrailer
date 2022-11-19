@@ -11,7 +11,7 @@ interface LintMenuProps {
 }
 
 function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
-    const { scaler, setScalar } = useEditorViewerContext();
+    const { scaler, setScalar, setSourcePanelOpen, sourcePanelOpen } = useEditorViewerContext();
 
     return (
         <div className={styles.LintMenu}>
@@ -26,6 +26,9 @@ function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
                 <Button onClick={() => setScalar(Math.min(scaler + 0.25, 3.0))} className={styles.ZoomButton}>
                     <ZoomIn />
                 </Button>
+            </div>
+            <div>
+                <Button onClick={() => setSourcePanelOpen(!sourcePanelOpen)}>Edit source</Button>
             </div>
             {afterChildren}
         </div>

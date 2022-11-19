@@ -1,6 +1,11 @@
 
+.EditorViewerLayout {
+    display: flex;
+}
 .PageCanvas {
+    flex: 1;
     position: relative;
+    display: flex;
     .TextLayer {
         position: absolute;
         left: 0;
@@ -20,5 +25,12 @@
             cursor: text;
             transform-origin: 0 0;
         }
+    }
+
+    > * {
+        flex: 1;
+    }
+    .SourcePanel {
+        flex: 0 0 300px;
     }
 }

@@ -24,7 +24,7 @@ function App() {
                         <Route index element={<Home />} />
                         <Route path="home" element={<Home />} />
                         <Route path="my-sources" element={<Sources />} />
-                        <Route path="editor/:id" element={<Editor />} />
+                        <Route path="editor/:fileId" element={<Editor />} />
                     </Route>
                 </Routes>
             </SnippetProvider>

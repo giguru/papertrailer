@@ -20,9 +20,9 @@ export function useFile(id: string | number, params: Record<string, any> | undef
     };
 }
 
-export function useFiles(id: string | number) {
+export function useFiles() {
     const { data: fullData, error, isLoading, isFetching } = useQuery(
-        ['file', id],
+        ['files'],
         () => axios.get<ServerIndexResponse<ApiFileInterface[]>>(`/files`)
     );
 

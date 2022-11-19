@@ -12,7 +12,7 @@ import RadioButtonsGroup from "../components/forms/RadioButtonsGroup";
 import Button from "../components/button/Button";
 import {useParams} from "react-router";
 import {relationOptions, RelationValue} from "../utils/enums";
-import RelationPopUp, {Direction} from "../components/editor/RelationPopUp";
+import RelationPopUp from "../components/editor/RelationPopUp";
 import Snippet from "../components/snippets/Snippet";
 
 const mainViewEditorId: string = 'main';
@@ -23,75 +23,73 @@ interface MainViewFlowData extends FlowData {
 }
 
 interface RouteParams extends Record<string, string> {
-    id: string
+    fileId: string
 }
 
 function MainView() {
-    const { id } = useParams<RouteParams>();
+    const { fileId } = useParams<RouteParams>();
     const { openView, activeIndex } = useContext(ViewSplitterContext);
     const { setSelectedBoundingBoxes, addFlowData } = useEditorContext();
     const { clearSelectedContent } = useEditorViewerContext();
     const initialValues: MainViewFlowData = { relation: RelationValue.Relates };
 
-    if (!id) {
-        return <span>No document ID was provided</span>
-    }
-
     return (
         <>
             <LintMenu />
-            <EditorViewer
-                fileId={id}
-                isActive={activeIndex === 0}
-                Component={({ selection }) => (
-                    <SelectionPopUp
-                        selection={selection}
-                        onCancel={clearSelectedContent}
-                    >
-                        <Formik
-                            initialValues={initialValues}
-                            onSubmit={(values: MainViewFlowData, { setSubmitting }: FormikHelpers<MainViewFlowData>) => {
-                                addFlowData({
-                                    relation: values.relation,
-                                });
-                                setSelectedBoundingBoxes(mainViewEditorId, selection);
-                                setSubmitting(false);
-                            }}
+            {fileId && (
+                <EditorViewer
+                    fileId={fileId}
+                    isActive={activeIndex === 0}
+                    Component={({ selection }) => (
+                        <SelectionPopUp
+                            selection={selection}
+                            onCancel={clearSelectedContent}
                         >
-                            {(formikProps) => (
-                                <form onSubmit={formikProps.handleSubmit}>
-                                    <Snippet text={selection.text} />
-                                    <div>
-                                        <RadioButtonsGroup.Formik
-                                            label="Relation"
-                                            options={Object.values(relationOptions)}
-                                            name="relation"
-                                        />
-                                    </div>
-                                    <Button
-                                        onClick={async () => {
-                                            openView(1);
-                                            await formikProps.submitForm();
-                                        }}
-                                    >
-                                        Link to other document
-                                    </Button>
-                                </form>
-                            )}
-                        </Formik>
-                    </SelectionPopUp>
-                )}
-            />
+                            <Formik
+                                initialValues={initialValues}
+                                onSubmit={(values: MainViewFlowData, { setSubmitting }: FormikHelpers<MainViewFlowData>) => {
+                                    addFlowData({
+                                        relation: values.relation,
+                                    });
+                                    setSelectedBoundingBoxes(mainViewEditorId, selection);
+                                    setSubmitting(false);
+                                }}
+                            >
+                                {(formikProps) => (
+                                    <form onSubmit={formikProps.handleSubmit}>
+                                        <Snippet text={selection.text} />
+                                        <div>
+                                            <RadioButtonsGroup.Formik
+                                                label="Relation"
+                                                options={Object.values(relationOptions)}
+                                                name="relation"
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={async () => {
+                                                openView(1);
+                                                await formikProps.submitForm();
+                                            }}
+                                        >
+                                            Link to other document
+                                        </Button>
+                                    </form>
+                                )}
+                            </Formik>
+                        </SelectionPopUp>
+                    )}
+                />
+            )}
         </>
     );
 }
 
 function OtherView() {
-    const { id } = useParams<RouteParams>();
+    const { fileId } = useParams<RouteParams>();
     const { openView } = useContext(ViewSplitterContext);
     const { selectedBoundingBoxesPerEditor, flowData, setSelectedBoundingBoxes } = useEditorContext();
     const { clearSelectedContent, setSelectedContent } = useEditorViewerContext();
-    const [selectedSource, setSelectedSource] = useState<{id: number} | undefined>();
+    const [selectedFile, setSelectedFile] = useState<{id: number} | undefined>();
 
     const selectionA = selectedBoundingBoxesPerEditor[mainViewEditorId];
 
@@ -100,12 +98,12 @@ function OtherView() {
         clearSelectedContent()
     }
 
-    if (!selectedSource) {
+    if (!selectedFile) {
         return (
             <SearchDocumentView
                 selection={selectionA}
-                onSelect={(source, newSelection) => {
-                    setSelectedSource(source);
+                onSelect={(newlySelectedFile, newSelection) => {
+                    setSelectedFile(newlySelectedFile);
                     if (newSelection) {
                         setSelectedContent(newSelection);
                     }
@@ -124,18 +122,18 @@ function OtherView() {
             <LintMenu
                 preChildren={(
                     <>
-                        <Button onClick={() => setSelectedSource(undefined)}>Choose other document</Button>
+                        <Button onClick={() => setSelectedFile(undefined)}>Choose other document</Button>
                     </>
                 )}
             />
             {selectionA && flowData.relation
                 ? (
                     <EditorViewer
-                        fileId={selectedSource.id}
+                        fileId={selectedFile.id}
                         Component={({ selection: selectionB }) => {
                             const initialFormData = {
-                                sourceA: selectedSource.id,
-                                sourceB: id,
+                                fileA: selectedFile.id,
+                                fileB: fileId,
                                 relation: flowData.relation || RelationValue.Relates,
                             }
                             /* TODO fix saving
@@ -178,22 +176,20 @@ function OtherView() {
 
 function Editor() {
     return (
-        <>
-            <EditorContextProvider>
-                <ViewSplitter defaultActiveIndex={0}>
-                    <ViewSplitter.Side index={0} alwaysShow>
-                        <EditorViewerContextProvider id={mainViewEditorId}>
-                            <MainView />
-                        </EditorViewerContextProvider>
-                    </ViewSplitter.Side>
-                    <ViewSplitter.Side index={1}>
-                        <EditorViewerContextProvider id={otherViewEditorId}>
-                            <OtherView />
-                        </EditorViewerContextProvider>
-                    </ViewSplitter.Side>
-                </ViewSplitter>
-            </EditorContextProvider>
-        </>
+        <EditorContextProvider>
+            <ViewSplitter defaultActiveIndex={0}>
+                <ViewSplitter.Side index={0} alwaysShow>
+                    <EditorViewerContextProvider id={mainViewEditorId}>
+                        <MainView  />
+                    </EditorViewerContextProvider>
+                </ViewSplitter.Side>
+                <ViewSplitter.Side index={1}>
+                    <EditorViewerContextProvider id={otherViewEditorId}>
+                        <OtherView />
+                    </EditorViewerContextProvider>
+                </ViewSplitter.Side>
+            </ViewSplitter>
+        </EditorContextProvider>
     );
 }
 
