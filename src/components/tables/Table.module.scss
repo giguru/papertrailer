@@ -1,0 +1,32 @@
+@import "src/sass/variables";
+
+.Table {
+    border-collapse: collapse;
+    width: 100%;
+    th {
+        text-align: left;
+        border-bottom: 2px solid $zinc300;
+        color: $zinc600;
+        font-weight: bold;
+        padding: 3px 7px;
+    }
+
+    .Row {
+        border-bottom: 1px solid $zinc300;
+
+        td {
+            padding: 7px 10px;
+            &:first-of-type {
+                border-left: 1px solid $zinc300;
+            }
+            &:last-of-type {
+                border-right: 1px solid $zinc300;
+            }
+        }
+
+        &.Clickable {
+            cursor: pointer;
+            &:hover { background-color:  $zinc100; }
+        }
+    }
+}

@@ -33,7 +33,7 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
     );
 
     return (
-        <div className={styles.EditorViewerLayout}>
+        <div className={`${styles.EditorViewerLayout}`}>
             <EditorViewerContainer className={styles.PageCanvas}>
                 {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
                 {isActive && fullData && (

@@ -126,6 +126,7 @@ function OtherView() {
                     </>
                 )}
             />
+            <div>
             {selectionA && flowData.relation
                 ? (
                     <EditorViewer
@@ -170,6 +171,7 @@ function OtherView() {
                 ) : (
                     <div>No initial selection...</div>
                 )}
+            </div>
         </>
     );
 }
