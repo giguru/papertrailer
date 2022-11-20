@@ -22,10 +22,9 @@ const examplePdfs: Record<number, string> = {
  * @param file
  * @constructor
  */
-function PdfjsViewer({ file, PageChildComponent }: { file: ApiFileInterface, PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
+function PdfjsViewer({ file, relations, PageChildComponent }: { file: ApiFileInterface, relations: ApiRelationInterface[], PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
     const { scaler } = useEditorViewerContext()
     const fileId = file.id;
-    const { relations } = useFileRelations(fileId)
     const [pdf, setPdf] = useState<PDFDocumentProxy | undefined>()
     const [pages, setPages] = useState<PDFPageProxy[]>([]);
 

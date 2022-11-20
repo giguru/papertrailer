@@ -2,12 +2,12 @@ import React from 'react';
 import { CircularProgress } from "@mui/material";
 
 interface LoaderProps {
-
+    size?: 'inline'
 }
 
-function Loader(props: LoaderProps) {
+function Loader({size}: LoaderProps) {
     return (
-        <CircularProgress />
+        <CircularProgress size={size === 'inline' ? 20 : undefined}/>
     );
 }
 

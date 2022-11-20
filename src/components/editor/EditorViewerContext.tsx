@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useId, useState} from 'react';
 import { AnySelection } from "./EditorViewer.utils";
 import {useEditorContext} from "./EditorContext";
-import {ApiFileInterface} from "../../api/models";
+import {ApiFileInterface, ApiRelationInterface} from "../../api/models";
 
 interface EditorViewerContextProps {
     scaler: number,
@@ -11,6 +11,8 @@ interface EditorViewerContextProps {
     clearSelectedContent: () => void,
     file?: ApiFileInterface,
     setFile: (file: ApiFileInterface | undefined) => void,
+    relations?: ApiRelationInterface[],
+    setRelations: (relations: ApiRelationInterface[]) => void,
     sourcePanelOpen: boolean,
     setSourcePanelOpen: (isOpen: boolean) => void
 }
@@ -22,6 +24,8 @@ export const initialState : EditorViewerContextProps = {
     clearSelectedContent: () => {},
     file: undefined,
     setFile: () => {},
+    relations: undefined,
+    setRelations: () => {},
     sourcePanelOpen: false,
     setSourcePanelOpen: () => {},
 }
@@ -37,6 +41,7 @@ export function useEditorViewerContext() {
 export function EditorViewerContextProvider({ children, id }: { children: React.ReactNode, id: string }) {
     const [scaler, setScalar] = useState<number>(initialState.scaler);
     const [file, setFile] = useState<ApiFileInterface | undefined>()
+    const [relations, setRelations] = useState<ApiRelationInterface[] | undefined>()
     const { setSelectedBoundingBoxes, selectedBoundingBoxesPerEditor } = useEditorContext()
     const [sourcePanelOpen, setSourcePanelOpen] = useState<EditorViewerContextProps['sourcePanelOpen']>(false);
 
@@ -60,6 +65,8 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
                 clearSelectedContent,
                 file,
                 setFile,
+                relations,
+                setRelations,
                 sourcePanelOpen,
                 setSourcePanelOpen,
             }}

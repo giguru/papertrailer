@@ -7,6 +7,7 @@ import PdfjsViewer from "./mozilla-pdfjs-based/PdfjsViewer";
 import styles from "./mozilla-pdfjs-based/PdfjsViewer.module.scss";
 import {useEditorContext} from "./EditorContext";
 import FilePanel from "./FilePanel";
+import {useFileRelations} from "../../api/hooks/relations";
 
 interface EditorViewerProps {
     Component: React.FunctionComponent<{ selection: AnySelection }>,
@@ -16,16 +17,21 @@ interface EditorViewerProps {
 
 // A single file viewer
 function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps) {
-    const { setFile } = useEditorViewerContext()
+    const { setFile, setRelations } = useEditorViewerContext()
     const {
         file: fullData,
         isLoading,
         error,
     } = useFile(fileId, { with: ['files']});
+    const { relations } = useFileRelations(fileId)
 
     useEffect(() => {
         setFile(fullData)
     }, [fullData])
+
+    useEffect(() => {
+        setRelations(relations || [])
+    }, [relations])
 
     const PageChildComponent = useCallback(
         ({ pageIndex }: { pageIndex: number }) => Component && <ComponentRenderer Component={Component} pageIndex={pageIndex} />,
@@ -37,7 +43,7 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
             <EditorViewerContainer className={styles.PageCanvas}>
                 {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
                 {isActive && fullData && (
-                    <PdfjsViewer file={fullData} PageChildComponent={PageChildComponent} />
+                    <PdfjsViewer relations={relations || []} file={fullData} PageChildComponent={PageChildComponent} />
                 )}
             </EditorViewerContainer>
             <FilePanel fileId={fileId} />

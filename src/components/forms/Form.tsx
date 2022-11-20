@@ -1,11 +1,21 @@
-import React, {useId, useState} from 'react';
+import React, {useEffect, useId, useRef, useState} from 'react';
 import { useMutation, useQuery } from "react-query";
-import { Formik, FormikHelpers, FormikValues } from "formik";
+import {Formik, FormikHelpers, FormikValues, useFormikContext} from "formik";
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import Loading from "../loading/Loading";
 import Alert from "@mui/material/Alert";
 import {FormikProps} from "formik/dist/types";
 import {ServerResponse} from "../../api/api";
+import Button from "../button/Button";
+
+function SaveButton() {
+    const { isSubmitting } = useFormikContext();
+    return (
+        <Button type="submit" isBusy={isSubmitting} size="large">
+            Save
+        </Button>
+    )
+}
 
 interface InnerFormInterface extends FormikProps<any> {
     children: React.ReactNode;
@@ -27,24 +37,41 @@ interface FormInput {
     initialFormData?: Record<string, any>,
 }
 
-const Form: React.FC<FormInput> = <TInputObject extends FormikValues, TResponseData = TInputObject>({
+function Form<TInputObject extends FormikValues, TResponseData = TInputObject>({
     isNew,
     endpoint,
     children,
     onSuccess,
     initialFormData = undefined,
-}: FormInput) => {
+}: FormInput) {
     const shouldFetch = !initialFormData;
+    const timeoutRef = useRef<NodeJS.Timeout>();
     const [submitError, setSubmitError] = useState('')
+    const [feedback, setFeedback] = useState('')
     const id = useId();
+
     const onSuccessCallback = () => {
         if (typeof onSuccess === 'function') {
             onSuccess();
         }
+        setSubmitError('');
+        setFeedback('Saved');
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = setTimeout(() => {
+            setFeedback('')
+        }, 2000);
     }
+
+    useEffect(() => {
+        return () =>{
+            clearTimeout(timeoutRef.current)
+        }
+    }, []);
+
     const catchApiError = (e: AxiosError<ServerResponse>) => {
         setSubmitError(e.response?.data?.message || e.message)
     }
+
     const putCall = (data: TInputObject) => axios.put<TInputObject, AxiosResponse<ServerResponse<TResponseData>>>(endpoint, data)
         .then(onSuccessCallback)
         .catch(catchApiError);
@@ -90,11 +117,17 @@ const Form: React.FC<FormInput> = <TInputObject extends FormikValues, TResponseD
         >
             {(formikProps) => (
                 <InnerForm {...formikProps}>
-                    {children}
-                    {submitError && <Alert severity="error">{submitError}</Alert>}
+                    <>
+                        {children}
+                        {submitError && <Alert severity="error">{submitError}</Alert>}
+                        {feedback && <Alert severity="success">{feedback}</Alert>}
+                    </>
                 </InnerForm>
             )}
         </Formik>
     );
-};
+}
+
+
 export default Form;
+export { SaveButton }

@@ -1,0 +1,11 @@
+@import "src/sass/variables";
+
+.DataRow {
+    width: 100%;
+    display: flex;
+
+    .Label {
+        color: $zinc500;
+        width: 150px;
+    }
+}
