@@ -56,7 +56,7 @@ function TextInput({ name, value, onChange, onBlur, placeholder, autoFocus = fal
             margin="normal"
             label={label}
             fullWidth
-            minRows={4}
+            minRows={2}
         />
     );
 }

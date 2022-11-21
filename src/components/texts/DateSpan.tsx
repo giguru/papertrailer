@@ -3,7 +3,7 @@ import moment from 'moment';
 
 function DateSpan({ date }: { date: string }) {
     return (
-        <div>{moment(date).format('DD MMM YYYY HH:mm')}</div>
+        <span>{moment(date).format('DD MMM YYYY HH:mm')}</span>
     );
 }
 

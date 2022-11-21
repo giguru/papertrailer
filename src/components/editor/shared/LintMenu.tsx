@@ -11,7 +11,7 @@ interface LintMenuProps {
 }
 
 function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
-    const { scaler, setScalar, setSourcePanelOpen, sourcePanelOpen } = useEditorViewerContext();
+    const { scaler, setScalar, setSourcePanelOpen, sourcePanelOpen, setCommentSectionOpen, commentSectionOpen } = useEditorViewerContext();
 
     return (
         <div className={styles.LintMenu}>
@@ -28,7 +28,12 @@ function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
                 </Button>
             </div>
             <div>
-                <Button onClick={() => setSourcePanelOpen(!sourcePanelOpen)}>Edit source</Button>
+                <Button onClick={() => setSourcePanelOpen(!sourcePanelOpen)}>
+                    Edit source
+                </Button>
+                <Button onClick={() => setCommentSectionOpen(!commentSectionOpen)}>
+                    View comments
+                </Button>
             </div>
             {afterChildren}
         </div>

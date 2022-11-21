@@ -10,6 +10,7 @@ export type ApiRelationInterface = Timestamps & {
     id: number
     title: string
     relation: RelationValue
+    created_by?: ApiUserInterface
     file_bounding_blocks?: ApiFileBoundingBlockInterface[]
 }
 

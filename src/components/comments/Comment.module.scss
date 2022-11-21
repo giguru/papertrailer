@@ -12,6 +12,13 @@
         padding: 7px;
         background-color: $zinc50;
         border: 1px solid $zinc300;
+        font-size: $fontSm;
+    }
+    .Paragraph:first-of-type {
+        margin-top: 0;
+    }
+    .Paragraph:last-of-type {
+        margin-bottom: 0;
     }
     .Header {
         display: flex;

@@ -15,6 +15,8 @@ interface EditorViewerContextProps {
     setRelations: (relations: ApiRelationInterface[]) => void,
     sourcePanelOpen: boolean,
     setSourcePanelOpen: (isOpen: boolean) => void
+    commentSectionOpen: boolean,
+    setCommentSectionOpen: (isOpen: boolean) => void
 }
 export const initialState : EditorViewerContextProps = {
     scaler: 1,
@@ -28,6 +30,8 @@ export const initialState : EditorViewerContextProps = {
     setRelations: () => {},
     sourcePanelOpen: false,
     setSourcePanelOpen: () => {},
+    commentSectionOpen: false,
+    setCommentSectionOpen: () => {},
 }
 
 const EditorViewerContext = React.createContext<EditorViewerContextProps>(initialState);
@@ -44,6 +48,7 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
     const [relations, setRelations] = useState<ApiRelationInterface[] | undefined>()
     const { setSelectedBoundingBoxes, selectedBoundingBoxesPerEditor } = useEditorContext()
     const [sourcePanelOpen, setSourcePanelOpen] = useState<EditorViewerContextProps['sourcePanelOpen']>(false);
+    const [commentSectionOpen, setCommentSectionOpen] = useState<EditorViewerContextProps['commentSectionOpen']>(false);
 
     const clearSelectedContent = () => setSelectedBoundingBoxes(id,undefined);
     useEffect(() => {
@@ -69,6 +74,8 @@ export function EditorViewerContextProvider({ children, id }: { children: React.
                 setRelations,
                 sourcePanelOpen,
                 setSourcePanelOpen,
+                commentSectionOpen,
+                setCommentSectionOpen,
             }}
         >
             {children}

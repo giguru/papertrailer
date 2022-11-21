@@ -6,8 +6,9 @@ import EditorViewerContainer from "./shared/EditorViewerContainer";
 import PdfjsViewer from "./mozilla-pdfjs-based/PdfjsViewer";
 import styles from "./mozilla-pdfjs-based/PdfjsViewer.module.scss";
 import {useEditorContext} from "./EditorContext";
-import FilePanel from "./FilePanel";
+import FilePanel from "./panels/FilePanel";
 import {useFileRelations} from "../../api/hooks/relations";
+import CommentsPanel from "./panels/CommentsPanel";
 
 interface EditorViewerProps {
     Component: React.FunctionComponent<{ selection: AnySelection }>,
@@ -47,6 +48,7 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
                 )}
             </EditorViewerContainer>
             <FilePanel fileId={fileId} />
+            <CommentsPanel fileId={fileId} />
         </div>
     );
 }

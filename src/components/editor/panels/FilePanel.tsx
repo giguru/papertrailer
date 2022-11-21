@@ -1,14 +1,14 @@
-import {useEditorViewerContext} from "./EditorViewerContext";
-import styles from "./mozilla-pdfjs-based/PdfjsViewer.module.scss";
+import {useEditorViewerContext} from "../EditorViewerContext";
+import styles from "../mozilla-pdfjs-based/PdfjsViewer.module.scss";
 import React from "react";
-import {TextInput, Form } from "../forms";
-import SidePanel from "../layout/SidePanel";
-import {SaveButton} from "../forms/Form";
+import {TextInput, Form } from "../../forms";
+import SidePanel from "../../layout/SidePanel";
+import {SaveButton} from "../../forms/Form";
 import {useFormikContext} from "formik";
 import moment from "moment";
-import {ApiFileInterface} from "../../api/models";
-import DataRow from "../forms/DataRow";
-import RelationsPerCategory from "./RelationsPerCategory";
+import {ApiFileInterface} from "../../../api/models";
+import DataRow from "../../forms/DataRow";
+import RelationsPerCategory from "../RelationsPerCategory";
 
 function InnerForm() {
     const { relations } = useEditorViewerContext();

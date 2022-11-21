@@ -12,7 +12,7 @@ function Comment({ text, created_at, created_by }: ApiCommentsInterface) {
                     {created_by && <UserNameSpan user={created_by} />}
                     <DateSpan date={created_at} />
                 </span>
-                {text}
+                {text.split('\n').map((text, idx) => <p className={styles.Paragraph} key={idx}>{text}</p>)}
             </div>
         </li>
     );
