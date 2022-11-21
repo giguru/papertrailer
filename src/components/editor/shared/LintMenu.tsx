@@ -4,6 +4,8 @@ import styles from './LintMenu.module.scss';
 import Button from "./../../button/Button";
 import ZoomIn from "@mui/icons-material/ZoomIn";
 import ZoomOut from "@mui/icons-material/ZoomOut";
+import EmotionBar from "../../emotions/EmotionBar";
+import {EmotionValue} from "../../../utils/enums";
 
 interface LintMenuProps {
     preChildren?: React.ReactNode,
@@ -11,11 +13,14 @@ interface LintMenuProps {
 }
 
 function LintMenu({ preChildren, afterChildren }: LintMenuProps) {
-    const { scaler, setScalar, setSourcePanelOpen, sourcePanelOpen, setCommentSectionOpen, commentSectionOpen } = useEditorViewerContext();
+    const { scaler, setScalar, setSourcePanelOpen, sourcePanelOpen, setCommentSectionOpen, commentSectionOpen, file } = useEditorViewerContext();
 
     return (
         <div className={styles.LintMenu}>
             {preChildren}
+            {file?.id && (
+                <EmotionBar emotions={[EmotionValue.LIKE]} type="file" id={file.id} />
+            )}
             <div className={styles.ZoomComponent}>
                 <Button onClick={() => setScalar(Math.max(scaler - 0.25, 0.25))} className={styles.ZoomButton}>
                     <ZoomOut />

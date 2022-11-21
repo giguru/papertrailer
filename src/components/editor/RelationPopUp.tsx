@@ -1,13 +1,14 @@
 import React from 'react';
 import Select from "../forms/Select";
-import {relationOptions, RelationValue} from "../../utils/enums";
+import {relationOptions} from "../../utils/enums";
 import Button from "../button/Button";
 import Form from "../forms/Form";
+import {useField} from "formik";
 import styles from './RelationPopUp.module.scss';
 import {AnySelection} from "./EditorViewer.utils";
-import {useField} from "formik";
 import Snippet from "../snippets/Snippet";
 import {ApiFileBoundingBlockInterface} from "../../api/models";
+import EmotionBar from "../emotions/EmotionBar";
 
 interface RelationPopUpProps {
     relationId?: number,
@@ -107,24 +108,31 @@ function RelationPopUp({
     onSuccess,
 }: RelationPopUpProps) {
     return (
-        <Form
-            endpoint={relationId ? `relations/${relationId}` : 'relations'}
-            isNew={!relationId}
-            initialFormData={{
-                ...initialFormData,
-                direction: Direction.FORWARDS,
-                file_bounding_blocks: [
-                    selectionToFileBoundingBlock(selectionA),
-                    selectionToFileBoundingBlock(selectionB),
-                ],
-            }}
-            onSuccess={onSuccess}
-        >
-            <InnerForm
-                selectionA={selectionA}
-                selectionB={selectionB}
-            />
-        </Form>
+        <>
+            {relationId && (
+                <div className={styles.EmotionBarContainer}>
+                    <EmotionBar emotions={[1, 2]} type="relation" id={relationId} />
+                </div>
+            )}
+            <Form
+                endpoint={relationId ? `relations/${relationId}` : 'relations'}
+                isNew={!relationId}
+                initialFormData={{
+                    ...initialFormData,
+                    direction: Direction.FORWARDS,
+                    file_bounding_blocks: [
+                        selectionToFileBoundingBlock(selectionA),
+                        selectionToFileBoundingBlock(selectionB),
+                    ],
+                }}
+                onSuccess={onSuccess}
+            >
+                <InnerForm
+                    selectionA={selectionA}
+                    selectionB={selectionB}
+                />
+            </Form>
+        </>
     );
 }
 

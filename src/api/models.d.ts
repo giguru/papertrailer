@@ -1,12 +1,14 @@
 import {BoundingBlock} from "../components/editor/EditorViewer.utils";
-import {RelationValue} from "../utils/enums";
+import {RelationValue, EmotionValue} from "../utils/enums";
 
 interface Timestamps {
     created_at: string,
     updated_at: string,
 }
 
-export type ApiRelationInterface = Timestamps & {
+type ApiEmotionCounts = Record<EmotionValue, number>
+
+type ApiRelationInterface = Timestamps & {
     id: number
     title: string
     relation: RelationValue
@@ -20,14 +22,14 @@ export type ApiUserInterface = Timestamps & {
     last_name: string
 }
 
-export type ApiCommentsInterface = Timestamps & {
+type ApiCommentsInterface = Timestamps & {
     id: number
     created_by_id: number
     created_by: ApiUserInterface,
     text: string
 }
 
-export type ApiFileBoundingBlockInterface = Timestamps & {
+type ApiFileBoundingBlockInterface = Timestamps & {
     file_id: number,
     text: string
     x: number
@@ -43,7 +45,7 @@ export type ApiFileBoundingBlockInterface = Timestamps & {
     }
 }
 
-export type ApiFileInterface = Timestamps & {
+type ApiFileInterface = Timestamps & {
     id: number,
     title: string,
     description: string,
@@ -58,3 +60,11 @@ export type ApiFileInterface = Timestamps & {
     file_bounding_blocks: undefined | Array<BoundingBlock>,
 }
 
+export {
+    Emotion,
+    ApiCommentsInterface,
+    ApiEmotionCounts,
+    ApiFileInterface,
+    ApiFileBoundingBlockInterface,
+    ApiRelationInterface,
+}

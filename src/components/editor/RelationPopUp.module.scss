@@ -1,3 +1,4 @@
+@import "src/sass/variables";
 
 $paddingY: 7px;
 $height: 43px;
@@ -26,4 +27,8 @@ $height: 43px;
     height: $height * 4;
     min-width: 300px;
     margin-bottom: 7px;
+}
+
+.EmotionBarContainer {
+    margin-bottom: $spaceXxs;
 }

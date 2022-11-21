@@ -1,3 +1,6 @@
+import React from "react";
+import {SvgIconComponent, ThumbDown, ThumbUp} from "@mui/icons-material";
+
 enum RelationValue {
     Support = 'SUPPORTS',
     Sources = 'SOURCES',
@@ -93,7 +96,39 @@ const relationOptions: Record<RelationValue, RelationOption> = {
     },
 }
 
+enum EmotionValue {
+    LIKE = 1,
+    DISLIKE = 2,
+    FUNNY = 3,
+}
+
+interface EmotionOption {
+    value: EmotionValue
+    label: string,
+    Icon: ({ size }: { size: number }) => JSX.Element,
+}
+
+const emotionOptions: Record<EmotionValue, EmotionOption> = {
+    [EmotionValue.LIKE]: {
+        value: EmotionValue.LIKE,
+        label: 'Like',
+        Icon: () => <ThumbUp fontSize="inherit" />
+    },
+    [EmotionValue.DISLIKE]: {
+        value: EmotionValue.DISLIKE,
+        label: 'Dislike',
+        Icon: () => <ThumbDown fontSize="inherit" />
+    },
+    [EmotionValue.FUNNY]: {
+        value: EmotionValue.FUNNY,
+        label: 'Funny',
+        Icon: () => <span>:D</span>
+    },
+}
+
 export {
     RelationValue,
+    EmotionValue,
     relationOptions,
+    emotionOptions,
 }

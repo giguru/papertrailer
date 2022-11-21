@@ -1,7 +1,7 @@
 import {useQuery} from "react-query";
 import axios from "axios";
-import {ApiFileInterface, ApiRelationInterface} from "../models";
-import {ServerGetResponse, ServerIndexResponse} from "../api";
+import {ApiRelationInterface} from "../models";
+import {ServerIndexResponse} from "../api";
 
 
 export function useFileRelations(id: string | number) {

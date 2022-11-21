@@ -1,0 +1,16 @@
+@import "src/sass/variables";
+
+.Bar {
+    border-radius: 100px;
+    background-color: $zinc100;
+    display: inline-flex;
+    justify-items: center;
+    align-items: center;
+    border: 1px solid $zinc300;
+
+    .Button {
+        cursor: pointer;
+        padding: 0 15px;
+        font-size: $fontXs;
+    }
+}
