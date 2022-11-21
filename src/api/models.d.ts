@@ -7,6 +7,7 @@ interface Timestamps {
 }
 
 type ApiEmotionInterface = {
+    id: number,
     emotion: EmotionValue
 }
 

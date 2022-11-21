@@ -10,26 +10,34 @@ function EmotionBar({ type, id, emotions }: { emotions: EmotionValue[], type: Em
     const { counts, my } = data || {};
     const barId = useId();
 
-    const { mutate } = useMutation(
-        barId,
+    const { mutate: create } = useMutation(
+        barId+'-create',
         ({ value }: { value: EmotionValue }) => axios.post('emotions', { type, type_id: id, emotion: value })
+            .finally(() => refetch()),
+        { onError: () => {} }
+    );
+    const { mutate: deleteEmotion } = useMutation(
+        barId+'-delete',
+        () => axios.delete(`emotions/${my?.id}`)
             .finally(() => refetch()),
         { onError: () => {} }
     );
 
     const postEmotion = (emotionValue: EmotionValue) => {
-        mutate({ value: emotionValue })
+        create({ value: emotionValue })
     }
 
     return (
         <div className={styles.Bar}>
             {emotions.map(((eValue) => {
                 const { Icon } = emotionOptions[eValue];
+                const isSelected = my?.emotion === eValue ? styles.Selected: '';
+
                 return (
                     <div
                         key={eValue}
-                        className={[styles.Button, my?.emotion === eValue ? styles.Selected: ''].join(' ')}
-                        onClick={() => postEmotion(eValue)}
+                        className={[styles.Button, isSelected].join(' ')}
+                        onClick={() => isSelected ? deleteEmotion() : postEmotion(eValue)}
                     >
                         {counts ? counts[eValue]: undefined}
                         &nbsp;
