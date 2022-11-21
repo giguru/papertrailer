@@ -1,4 +1,8 @@
+@import "src/sass/variables";
 
+.NegativeSpacing {
+    margin: -1 * $space;
+}
 
 .Relation {
     position: absolute;
@@ -41,7 +45,6 @@
     .ContentModal {
         position: absolute;
         background-color: #fff;
-        padding: 5px;
         border-radius: 10px;
     }
 

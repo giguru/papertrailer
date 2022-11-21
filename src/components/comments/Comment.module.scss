@@ -1,0 +1,28 @@
+@import "src/sass/variables";
+
+.Comment {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $spaceXxs;
+
+    .Text {
+        display: flex;
+        flex-direction: column;
+        border-radius: $borderRadius;
+        padding: 7px;
+        background-color: $zinc50;
+        border: 1px solid $zinc300;
+    }
+    .Header {
+        display: flex;
+        justify-content: space-between;
+        font-size: $fontXs;
+        margin-bottom: 3px;
+    }
+    .Footer {
+        text-align: right;
+        padding: 3px 7px;
+        font-size: $fontXs;
+        color: $zinc400;
+    }
+}

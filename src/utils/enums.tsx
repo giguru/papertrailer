@@ -7,6 +7,8 @@ enum RelationValue {
     Relates = 'RELATES',
     Expands = 'EXPANDS',
     FollowsUp = 'FOLLOWS_UP',
+    Comprehensive = 'COMPREHENSIVE',
+    Causal = 'CAUSAL',
 }
 
 interface RelationOption {
@@ -14,7 +16,7 @@ interface RelationOption {
     label: string,
     color: string,
     labelInfix?: string
-    optionGroup: 'positive' | 'negative' | 'neutral',
+    optionGroup: 'positive' | 'negative' | 'neutral' | 'timely',
     directional: boolean
 }
 
@@ -24,6 +26,20 @@ const relationOptions: Record<RelationValue, RelationOption> = {
         label: 'Supports',
         optionGroup: 'positive',
         directional: false,
+        color: '#7ed6df',
+    },
+    [RelationValue.Causal]: {
+        value: RelationValue.Causal,
+        label: 'Causes',
+        optionGroup: 'positive',
+        directional: true,
+        color: '#7ed6df',
+    },
+    [RelationValue.Comprehensive]: {
+        value: RelationValue.Comprehensive,
+        label: 'is better explained in',
+        optionGroup: 'positive',
+        directional: true,
         color: '#7ed6df',
     },
     [RelationValue.Contradicts]: {

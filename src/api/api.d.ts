@@ -11,3 +11,8 @@ export interface ServerResponse<T = {}> {
     data: T | undefined;
     message: string | undefined;
 }
+
+export interface ServerErrorResponse<T extends {[key: string]: any}> {
+    message: string | undefined,
+    errors: T
+}

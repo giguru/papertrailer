@@ -5,10 +5,17 @@ import {relationOptions} from "../../../utils/enums";
 import RelationPopUp, {fileBoundingBlockToSelection} from "../RelationPopUp";
 import {useEditorViewerContext} from "../EditorViewerContext";
 import FloatingPane from "../../FloatingPane";
+import CommentSection from "../../comments/CommentSection";
+import DividerWithText from "../../DividerWithText";
 
 const relevantForFile = (file: ApiFileInterface | undefined, fileId: number) => file && file.id === fileId
 type ExtendedApiRelationInterface = ApiRelationInterface & { indent: number }
 
+/**
+ * Display one relation in the editor including the indicator and edit / comment pane.
+ *
+ * @param relation
+ */
 function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface }) {
     const { file, scaler } = useEditorViewerContext()
     const [isOpen, setOpenRelation] = useState(false)
@@ -62,6 +69,9 @@ function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface 
                                         ...relation
                                     }}
                                 />
+                                <FloatingPane.Footer>
+                                    <CommentSection type="relation" id={relation.id} />
+                                </FloatingPane.Footer>
                             </FloatingPane>
                         )}
                     </div>
@@ -83,6 +93,7 @@ export default function RelationsInterface({ relations }: { relations: ApiRelati
     const sortedRelations = useMemo(() => {
             let inWindow: Array<ApiRelationInterface & { top: number, height: number }> = [];
 
+            // TODO move indentation to file bounding block instead of relation. Case: when file is relating to itself.
             const sorted = relations
                 .map((r) => {
                     const fbbs = r.file_bounding_blocks?.filter((fbb) => relevantForFile(file, fbb.file_id)) || [];
@@ -103,7 +114,7 @@ export default function RelationsInterface({ relations }: { relations: ApiRelati
 
             return sorted.map<ExtendedApiRelationInterface>((r) => {
                 // Remove all in window
-                inWindow = inWindow.filter((windowR) =>  r.top < windowR.top + windowR.height)
+                inWindow = inWindow.filter((windowR) =>  r.top <= windowR.top + windowR.height)
 
                 // Add current
                 inWindow.push(r);

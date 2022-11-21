@@ -44,4 +44,8 @@ function FloatingPane({ children, position, onClose, header, className }: Floati
     );
 }
 
+FloatingPane.Footer = ({ children }: { children: React.ReactNode }) => {
+    return <div className={styles.Footer}>{children}</div>
+}
+
 export default FloatingPane;

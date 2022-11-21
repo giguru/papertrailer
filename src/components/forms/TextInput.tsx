@@ -9,9 +9,10 @@ interface TextInputFieldInterface {
     placeholder?: string,
     multiline?: boolean,
     label?: string,
+    type?: string,
 }
 
-function TextInputField({ name, placeholder, multiline, label }: TextInputFieldInterface) {
+function TextInputField({ name, placeholder, multiline, label, type }: TextInputFieldInterface) {
     const [field, { error }] = useField({ name })
     return (
         <TextInput
@@ -20,6 +21,7 @@ function TextInputField({ name, placeholder, multiline, label }: TextInputFieldI
             multiline={multiline}
             label={label}
             error={error}
+            type={type}
         />
     );
 }
@@ -30,12 +32,13 @@ interface TextInputInterface extends Omit<FieldInputProps<any>, 'name' | 'onChan
     multiline?: boolean,
     label?: string,
     error?: string,
+    type?: string,
     name?: FieldInputProps<any>['name']
     onChange?: FieldInputProps<any>['onChange']
     onBlur?: FieldInputProps<any>['onBlur']
 }
 
-function TextInput({ name, value, onChange, onBlur, placeholder, autoFocus = false, multiline, label, error }: TextInputInterface) {
+function TextInput({ name, value, onChange, onBlur, placeholder, autoFocus = false, multiline, label, error, type }: TextInputInterface) {
     return (
         <TextField
             className={styles.TextInput}
@@ -48,6 +51,8 @@ function TextInput({ name, value, onChange, onBlur, placeholder, autoFocus = fal
             autoFocus={autoFocus}
             multiline={multiline}
             helperText={error}
+            error={Boolean(error)}
+            type={type}
             margin="normal"
             label={label}
             fullWidth

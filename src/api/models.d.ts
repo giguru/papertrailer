@@ -13,6 +13,19 @@ export type ApiRelationInterface = Timestamps & {
     file_bounding_blocks?: ApiFileBoundingBlockInterface[]
 }
 
+export type ApiUserInterface = Timestamps & {
+    id: number
+    first_name: string
+    last_name: string
+}
+
+export type ApiCommentsInterface = Timestamps & {
+    id: number
+    created_by_id: number
+    created_by: ApiUserInterface,
+    text: string
+}
+
 export type ApiFileBoundingBlockInterface = Timestamps & {
     file_id: number,
     text: string

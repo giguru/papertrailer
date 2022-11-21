@@ -5,16 +5,7 @@ import Button from "../../components/button/Button";
 import {useSnippetsContext} from "../../components/snippets/SnippetProvider";
 import Snippet from "../../components/snippets/Snippet";
 import {AnySelection} from "../../components/editor/EditorViewer.utils";
-
-function DividerWithText({ text }: { text: string }) {
-    return (
-        <div>
-            <br/>
-            --- {text} ---
-            <br/>
-        </div>
-    )
-}
+import DividerWithText from "../../components/DividerWithText";
 
 function SearchDocumentView<T extends Record<string, any>>(
     {

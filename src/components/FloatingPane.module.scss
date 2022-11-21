@@ -1,20 +1,26 @@
+@import "src/sass/variables";
 
 .FloatingPane {
     display: block;
     position: absolute;
     background: #fff;
     box-shadow: 0 0 35px rgba(0,0,0,0.3);
-    border-radius: 15px;
+    border-radius: $borderRadiusLg;
     z-index: 1000;
 
     .Header {
         border-bottom: 1px solid #efefef;
-        padding: 15px;
+        padding: $space;
         font-weight: 500;
         font-size: 18px;
     }
+    .Footer {
+        margin: $space -$space 0 -$space;
+        padding: $space;
+        background-color: $zinc200;
+    }
     .Content {
-        padding: 5px 15px 15px 15px;
+        padding: 5px 15px 0 15px;
     }
 
     .CloseButton {
@@ -32,6 +38,7 @@
         cursor: pointer;
         color: #aaa;
         border: 2px solid #ccc;
+
         &:hover {
             background-color: blue;
         }

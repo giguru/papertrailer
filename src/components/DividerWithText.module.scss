@@ -1,0 +1,17 @@
+@import "src/sass/variables";
+
+.DividerWithText {
+    display: flex;
+    padding: 25px 0;
+
+    &::before {
+        display: flex;
+        content: '';
+        width: 100%;
+        border-bottom: 1px solid $zinc300;
+    }
+
+    .Text {
+        background-color: #fff;
+    }
+}

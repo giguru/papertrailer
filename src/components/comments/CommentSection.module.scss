@@ -1,0 +1,19 @@
+@import "src/sass/variables";
+
+.CommentSection {
+    display: flex;
+    flex-direction: column;
+
+    .ButtonFooter {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .CommentList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 300px;
+        overflow: scroll;
+    }
+}

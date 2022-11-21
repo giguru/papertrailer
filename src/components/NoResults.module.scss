@@ -1,0 +1,11 @@
+@import "src/sass/variables";
+
+.NoResults {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    border-radius: $borderRadiusLg;
+    background-color: $zinc100;
+    color: $zinc400;
+}
