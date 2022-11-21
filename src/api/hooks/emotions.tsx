@@ -5,7 +5,6 @@ import {ServerGetResponse} from "../api";
 
 export type EmotionType = 'relation' | 'comment' | 'file';
 
-
 export function useEmotionCounts(type: EmotionType, id: string | number) {
     const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
         ['emotions', type, id, 'counts'],
@@ -20,7 +19,7 @@ export function useEmotionCounts(type: EmotionType, id: string | number) {
     const returnData : ApiEmotionCounts | undefined = fullData?.data.data || undefined;
 
     return {
-        counts: returnData,
+        data: returnData,
         error,
         isLoading,
         isFetching,

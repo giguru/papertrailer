@@ -12,5 +12,9 @@
         cursor: pointer;
         padding: 0 15px;
         font-size: $fontXs;
+
+        &.Selected {
+            color: blue;
+        }
     }
 }

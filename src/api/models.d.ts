@@ -6,8 +6,14 @@ interface Timestamps {
     updated_at: string,
 }
 
-type ApiEmotionCounts = Record<EmotionValue, number>
+type ApiEmotionInterface = {
+    emotion: EmotionValue
+}
 
+type ApiEmotionCounts = {
+    counts: Record<EmotionValue, number>
+    my: ApiEmotionInterface
+}
 type ApiRelationInterface = Timestamps & {
     id: number
     title: string

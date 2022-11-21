@@ -6,7 +6,8 @@ import {useMutation} from "react-query";
 import axios from "axios";
 
 function EmotionBar({ type, id, emotions }: { emotions: EmotionValue[], type: EmotionType, id: number }) {
-    const { counts, refetch } = useEmotionCounts(type, id);
+    const { data, refetch } = useEmotionCounts(type, id);
+    const { counts, my } = data || {};
     const barId = useId();
 
     const { mutate } = useMutation(
@@ -25,7 +26,11 @@ function EmotionBar({ type, id, emotions }: { emotions: EmotionValue[], type: Em
             {emotions.map(((eValue) => {
                 const { Icon } = emotionOptions[eValue];
                 return (
-                    <div key={eValue} className={styles.Button} onClick={() => postEmotion(eValue)}>
+                    <div
+                        key={eValue}
+                        className={[styles.Button, my?.emotion === eValue ? styles.Selected: ''].join(' ')}
+                        onClick={() => postEmotion(eValue)}
+                    >
                         {counts ? counts[eValue]: undefined}
                         &nbsp;
                         <Icon size={10} />
