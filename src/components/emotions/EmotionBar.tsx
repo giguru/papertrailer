@@ -12,7 +12,7 @@ function EmotionBar({ type, id, emotions }: { emotions: EmotionValue[], type: Em
     const { mutate } = useMutation(
         barId,
         ({ value }: { value: EmotionValue }) => axios.post('emotions', { type, type_id: id, emotion: value })
-            .then(() => refetch()),
+            .finally(() => refetch()),
         { onError: () => {} }
     );
 
