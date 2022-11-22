@@ -37,7 +37,7 @@ function FloatingPane({ children, position, onClose, header, className }: Floati
                 X
             </span>
             {header && <div className={styles.Header}>{header}</div>}
-            <div className={styles.Content}>
+            <div>
                 {children}
             </div>
         </div>
@@ -46,6 +46,9 @@ function FloatingPane({ children, position, onClose, header, className }: Floati
 
 FloatingPane.Footer = ({ children }: { children: React.ReactNode }) => {
     return <div className={styles.Footer}>{children}</div>
+}
+FloatingPane.Content = ({ children }: { children: React.ReactNode }) => {
+    return <div className={styles.Content}>{children}</div>
 }
 
 export default FloatingPane;

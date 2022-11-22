@@ -16,13 +16,18 @@ import {useNavigate} from "react-router";
 import {Link} from "react-router-dom";
 import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
+import styles from './TopMenuBar.module.scss';
+
 
 type ApiEndpoint = string;
 type PageType = {[label: string] : ApiEndpoint };
 
 const pages : PageType = {
-    'Public Nets': routes.publicNets,
     'My sources': routes.mySources,
+};
+
+const publicPages : PageType = {
+    'Public Nets': routes.publicNets,
 };
 
 const settings : PageType = {
@@ -52,29 +57,28 @@ const TopMenuBar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" variant="outlined" className={styles.Toolbar}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Link to={routes.home}>
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        <Link to={routes.home}>
                             PAPERTRAILER
-                        </Typography>
-                    </Link>
+                        </Link>
+                    </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
@@ -138,56 +142,73 @@ const TopMenuBar = () => {
                         LOGO
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {Object.keys(pages).map((label) => (
+                        {Object.keys(publicPages).map((label) => (
                             <Button
                                 key={label}
                                 onClick={() => {
-                                    navigate(pages[label])
+                                    navigate(publicPages[label])
                                     handleCloseNavMenu();
                                 }}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                sx={{ my: 1, mr: 2, display: 'block' }}
+                                className={styles.MainMenuLink}
                             >
                                 {label}
                             </Button>
                         ))}
                     </Box>
-
                     {loggedInUser ? (
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt={`${loggedInUser.first_name} ${loggedInUser.last_name}`} src="/static/images/avatar/2.jpg" />
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                {Object.keys(settings).map((label) => (
-                                    <MenuItem key={label} onClick={() => {
-                                        navigate(settings[label]);
-                                        handleCloseUserMenu();
-                                    }}>
-                                        <Typography textAlign="center">{label}</Typography>
-                                    </MenuItem>
+                        <>
+                            <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+                                {Object.keys(pages).map((label) => (
+                                    <Button
+                                        key={label}
+                                        onClick={() => {
+                                            navigate(pages[label])
+                                            handleCloseNavMenu();
+                                        }}
+                                        sx={{ my: 1, mr: 2, display: 'block' }}
+                                        className={styles.MainMenuLink}
+                                    >
+                                        {label}
+                                    </Button>
                                 ))}
-                                <MenuItem onClick={() => logout()}>
-                                    <Typography textAlign="center">Log out</Typography>
-                                </MenuItem>
-                            </Menu>
-                        </Box>
+                            </Box>
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        <Avatar alt={`${loggedInUser.first_name} ${loggedInUser.last_name}`} src="/static/images/avatar/2.jpg" />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {Object.keys(settings).map((label) => (
+                                        <MenuItem key={label} onClick={() => {
+                                            navigate(settings[label]);
+                                            handleCloseUserMenu();
+                                        }}>
+                                            <Typography textAlign="center">{label}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                    <MenuItem onClick={() => logout()}>
+                                        <Typography textAlign="center">Log out</Typography>
+                                    </MenuItem>
+                                </Menu>
+                            </Box>
+                        </>
                     ) : (
                         <Link to={routes.login}>
                             Log in

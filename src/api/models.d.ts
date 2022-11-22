@@ -60,10 +60,12 @@ type ApiFileInterface = Timestamps & {
     file_url: string,
     size_width: number,
     size_height: number,
+    comments_count: number,
     processed: 0 | 1,
     processed_at: string | null,
     parent_file_id: number | null,
     files: undefined | ApiFileInterface[],
+    created_by?: ApiUserInterface,
     file_bounding_blocks: undefined | Array<BoundingBlock>,
 }
 

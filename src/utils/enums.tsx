@@ -1,5 +1,5 @@
 import React from "react";
-import {SvgIconComponent, ThumbDown, ThumbUp} from "@mui/icons-material";
+import {Mood, SvgIconComponent, ThumbDown, ThumbUp} from "@mui/icons-material";
 
 enum RelationValue {
     Support = 'SUPPORTS',
@@ -112,17 +112,17 @@ const emotionOptions: Record<EmotionValue, EmotionOption> = {
     [EmotionValue.LIKE]: {
         value: EmotionValue.LIKE,
         label: 'Like',
-        Icon: () => <ThumbUp fontSize="inherit" />
+        Icon: () => <ThumbUp fontSize="inherit" style={{ fontSize: 14 }} />
     },
     [EmotionValue.DISLIKE]: {
         value: EmotionValue.DISLIKE,
         label: 'Dislike',
-        Icon: () => <ThumbDown fontSize="inherit" />
+        Icon: () => <ThumbDown fontSize="inherit" style={{ fontSize: 14 }} />
     },
     [EmotionValue.FUNNY]: {
         value: EmotionValue.FUNNY,
         label: 'Funny',
-        Icon: () => <span>:D</span>
+        Icon: () => <Mood fontSize="inherit" style={{ fontSize: 18 }} />
     },
 }
 

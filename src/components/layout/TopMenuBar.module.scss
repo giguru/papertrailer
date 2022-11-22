@@ -1,0 +1,9 @@
+@import "src/sass/variables";
+
+.Toolbar {
+    .MainMenuLink {
+        color: $zinc700;
+        text-transform: none;
+        font-weight: 500;
+    }
+}

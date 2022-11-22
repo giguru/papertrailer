@@ -2,8 +2,9 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 import axios from 'axios';
-import TopMenuBar from './components/layout/TopMenuBar';
+import {createTheme, ThemeProvider} from "@mui/material";
 import { Routes, Route } from "react-router";
+import TopMenuBar from './components/layout/TopMenuBar';
 import Home from "./pages/Home";
 import Sources from "./pages/Sources";
 import Editor from "./pages/Editor";
@@ -17,28 +18,66 @@ axios.defaults.baseURL = 'http://0.0.0.0/api';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const queryClient = new QueryClient({});
+const theme = createTheme({
+    components: {
+        // Name of the component
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    // Some CSS
+                    fontSize: '1rem',
+                    textTransform: 'none',
+                },
+                outlinedPrimary: {
+                    color: 'rgb(5 150 105)',
+                    borderColor: 'rgb(5 150 105)',
+                },
+                containedPrimary: {
+                    // color: 'rgb(5 150 105)',
+                    backgroundColor: 'rgb(16 185 129)',
+                },
+            },
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    color: '#aaaaaa',
+                }
+            }
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#fff',
+                }
+            },
+        }
+    },
+});
 
 function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <SnippetProvider>
-                    <TopMenuBar />
-                    <Routes>
-                        <Route path="/">
-                            <Route index element={<Home />} />
-                            <Route path={routes.home} element={<Home />} />
-                            <Route path={routes.login} element={<LoginPage />} />
-                            <Route path={routes.mySources} element={<Sources />} />
-                            <Route path={routes.publicNets} element={<PublicNets />} />
-                            <Route path={routes.editFile(':fileId')} element={<Editor />} />
-                        </Route>
-                    </Routes>
-                </SnippetProvider>
+        <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                    <SnippetProvider>
+                        <TopMenuBar />
+                        <Routes>
+                            <Route path="/">
+                                <Route index element={<Home />} />
+                                <Route path={routes.home} element={<Home />} />
+                                <Route path={routes.login} element={<LoginPage />} />
+                                <Route path={routes.mySources} element={<Sources />} />
+                                <Route path={routes.publicNets} element={<PublicNets />} />
+                                <Route path={routes.editFile(':fileId')} element={<Editor />} />
+                            </Route>
+                        </Routes>
+                    </SnippetProvider>
 
-                <ReactQueryDevtools initialIsOpen={false}/>
-            </AuthProvider>
-        </QueryClientProvider>
+                    <ReactQueryDevtools initialIsOpen={false}/>
+                </AuthProvider>
+            </QueryClientProvider>
+        </ThemeProvider>
     );
 }
 

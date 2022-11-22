@@ -10,6 +10,28 @@ $zinc700: rgb(63 63 70);
 $zinc800: rgb(39 39 42);
 $zinc900: rgb(24, 24, 27);
 
+$emerald50: rgb(236 253 245);
+$emerald100: rgb(209 250 229);
+$emerald200: rgb(167 243 208);
+$emerald300: rgb(110 231 183);
+$emerald400: rgb(52 211 153);
+$emerald500: rgb(16 185 129);
+$emerald600: rgb(5 150 105);
+$emerald700: rgb(4 120 87);
+$emerald800: rgb(6 95 70);
+$emerald900: rgb(6 78 59);
+
+$fuchsia50: rgb(253 244 255);
+$fuchsia100: rgb(250 232 255);
+$fuchsia200: rgb(245 208 254);
+$fuchsia300: rgb(240 171 252);
+$fuchsia400: rgb(232 121 249);
+$fuchsia500: rgb(217 70 239);
+$fuchsia600: rgb(192 38 211);
+$fuchsia700: rgb(162 28 175);
+$fuchsia800: rgb(134 25 143);
+$fuchsia900: rgb(112 26 117);
+
 $borderRadius: 7px;
 $borderRadiusLg: 15px;
 
@@ -22,3 +44,6 @@ $space: 15px;
 $spaceSm: 0.8 * $space;
 $spaceXs: 0.5 * $space;
 $spaceXxs: 0.3 * $space;
+
+$hoverColor: $emerald400;
+$activeColor: $emerald500;

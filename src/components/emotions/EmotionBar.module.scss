@@ -1,20 +1,49 @@
 @import "src/sass/variables";
 
 .Bar {
-    border-radius: 100px;
-    background-color: $zinc100;
+
     display: inline-flex;
     justify-items: center;
     align-items: center;
-    border: 1px solid $zinc300;
+    justify-content: center;
 
     .Button {
         cursor: pointer;
-        padding: 0 15px;
+        padding: 0 $spaceXs;
         font-size: $fontXs;
 
         &.Selected {
-            color: blue;
+            color: $activeColor;
+        }
+        &:hover {
+            color: $hoverColor;
+        }
+    }
+
+    &.FooterInline {
+        padding-top: $spaceXxs;
+
+        &.HasCounts {
+            display: inline-flex !important;
+            margin-top: $spaceXxs;
+            border-top: 1px solid $zinc100;
+        }
+        &.NoCounts {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            top: calc(100%);
+        }
+    }
+    &.Block {
+        border-radius: 100px;
+        border: 1px solid $zinc300;
+        background-color: $zinc100;
+    }
+    &.Inline {
+        margin-left: $space;
+        .Button {
+            padding: 0 $spaceXs;
         }
     }
 }

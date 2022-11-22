@@ -6,7 +6,12 @@
 
     .ButtonFooter {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        justify-items: flex-end;
+    }
+    .CharCount {
+        font-size: $fontXs;
+        color: $zinc700;
     }
 
     .CommentList {
@@ -15,5 +20,6 @@
         margin: 0;
         max-height: 300px;
         overflow: scroll;
+        padding-bottom: $space;
     }
 }

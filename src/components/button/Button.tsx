@@ -3,7 +3,7 @@ import MuiButton from "@mui/material/Button";
 import { ButtonProps as MuiButtonProps } from "@mui/material/Button";
 import Loader from "../loader/Loader";
 
-type ButtonInterface = Pick<MuiButtonProps, 'children' | 'onClick' | 'variant' | 'type' | 'className' | 'size'> & {
+type ButtonInterface = Pick<MuiButtonProps, 'children' | 'onClick' | 'variant' | 'type' | 'className' | 'size' | 'color'> & {
     isBusy?: boolean
 };
 

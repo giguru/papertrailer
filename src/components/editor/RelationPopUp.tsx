@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Select from "../forms/Select";
 import {relationOptions} from "../../utils/enums";
 import Button from "../button/Button";
@@ -8,7 +8,8 @@ import styles from './RelationPopUp.module.scss';
 import {AnySelection} from "./EditorViewer.utils";
 import Snippet from "../snippets/Snippet";
 import {ApiFileBoundingBlockInterface} from "../../api/models";
-import EmotionBar from "../emotions/EmotionBar";
+import EmotionBar, {Variant} from "../emotions/EmotionBar";
+import cx from "classnames";
 
 interface RelationPopUpProps {
     relationId?: number,
@@ -26,17 +27,24 @@ export enum Direction {
 const fieldNames = {
     direction: 'direction',
     relation: 'relation',
+    canEdit: 'can_edit',
 }
 
-function InnerForm({ selectionA, selectionB }: { selectionA: AnySelection, selectionB: AnySelection }) {
+function InnerForm(
+    { selectionA, selectionB, relationId }: { selectionA: AnySelection, selectionB: AnySelection, relationId?: number }
+) {
+    const isNew = !relationId;
+    const [inEditMode, setEditMode] = useState<boolean>(isNew)
+    const [hasVoted, setVoted] = useState<boolean>(false)
     const [{ value: directionValue },,{ setValue: setDirection}] = useField(fieldNames.direction);
     const [{ value: relationValue }] = useField(fieldNames.relation);
+    const [{ value: canEdit }] = useField(fieldNames.canEdit);
     const options = Object.values(relationOptions)
     const selectedOption = options.find(o => o.value === relationValue)
 
     return (
         <>
-            <div className={styles.RelationDefinitionContainer}>
+            <div className={cx({[styles.RelationDefinitionContainer]: true, [styles.EditMode]: inEditMode})}>
                 <Snippet
                     className={styles.TextBox}
                     style={{ top: directionValue === Direction.FORWARDS ? 0 : '75%' }}
@@ -44,15 +52,33 @@ function InnerForm({ selectionA, selectionB }: { selectionA: AnySelection, selec
                     fileId={selectionA.fileId}
                 />
                 <div className={styles.RelationInputsContainer}>
-                    <Select.Formik
-                        name={fieldNames.relation}
-                        label="Relation"
-                        options={options}
-                    />
-                    {selectedOption?.directional && (
-                        <Button onClick={() => setDirection(directionValue * -1)}>
-                            &#8597;
-                        </Button>
+                    {inEditMode ? (
+                        <>
+                            <Select.Formik
+                                name={fieldNames.relation}
+                                label="Relation"
+                                options={options}
+                            />
+                            {selectedOption?.directional && (
+                                <Button onClick={() => setDirection(directionValue * -1)}>
+                                    &#8597;
+                                </Button>
+                            )}
+                        </>
+                    ) : (
+                        <span className={styles.DisplayRelation}>
+                            {selectedOption?.label}
+                            {relationId && (
+                                <EmotionBar
+                                    emotions={[1, 2]}
+                                    type="relation"
+                                    id={relationId}
+                                    variant={Variant.Inline}
+                                    onChange={() => setVoted(true)}
+                                />
+                            )}
+                            {canEdit && !hasVoted && <Button variant="text" size="small" onClick={() => setEditMode(true)}>Edit</Button>}
+                        </span>
                     )}
                 </div>
                 <Snippet
@@ -63,7 +89,7 @@ function InnerForm({ selectionA, selectionB }: { selectionA: AnySelection, selec
                 />
             </div>
 
-            <Button type="submit">Save</Button>
+            {(inEditMode || !relationId) && <Button type="submit">Save</Button>}
         </>
     )
 }
@@ -107,13 +133,9 @@ function RelationPopUp({
     initialFormData,
     onSuccess,
 }: RelationPopUpProps) {
+
     return (
         <>
-            {relationId && (
-                <div className={styles.EmotionBarContainer}>
-                    <EmotionBar emotions={[1, 2]} type="relation" id={relationId} />
-                </div>
-            )}
             <Form
                 endpoint={relationId ? `relations/${relationId}` : 'relations'}
                 isNew={!relationId}
@@ -130,6 +152,7 @@ function RelationPopUp({
                 <InnerForm
                     selectionA={selectionA}
                     selectionB={selectionB}
+                    relationId={relationId}
                 />
             </Form>
         </>

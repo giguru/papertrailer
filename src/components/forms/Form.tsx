@@ -13,7 +13,7 @@ import styles from './Form.module.scss';
 function SaveButton({ text = 'Save' }: { text?: string }) {
     const { isSubmitting } = useFormikContext();
     return (
-        <Button type="submit" isBusy={isSubmitting} size="large" className={styles.SaveButton}>
+        <Button type="submit" isBusy={isSubmitting} size="large" variant="contained" className={styles.SaveButton}>
             {text}
         </Button>
     )

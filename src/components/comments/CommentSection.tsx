@@ -6,10 +6,30 @@ import {SaveButton} from "../forms/Form";
 import styles from './CommentSection.module.scss';
 import NoResults from "../NoResults";
 import Loader from "../loader/Loader";
+import {useField} from "formik";
 
 interface CommentProps {
     type: CommentType
     id: number
+}
+
+const MAX_COMMENT_LENGTH = 255;
+
+const fieldNames = {
+    TEXT: 'text',
+}
+function InnerForm() {
+    const [{ value: text }] = useField(fieldNames.TEXT);
+
+    return (
+        <>
+            <TextInput.Formik name={fieldNames.TEXT} placeholder="Share your knowledge here!" multiline />
+            <div className={styles.ButtonFooter}>
+                <span className={styles.CharCount}>{text?.length} / {MAX_COMMENT_LENGTH}</span>
+                {text?.length > 0 && <SaveButton text="Add comment" />}
+            </div>
+        </>
+    );
 }
 
 function CommentSection({ type, id }: CommentProps) {
@@ -21,7 +41,7 @@ function CommentSection({ type, id }: CommentProps) {
                 {isLoading && <Loader />}
                 {comments?.length
                     ? comments?.map((comment) => <Comment {...comment} key={comment.id} />)
-                    : <NoResults>Be the first to place a comment!</NoResults>}
+                    : <NoResults>Be the first to react</NoResults>}
             </ul>
             <Form
                 endpoint="comments"
@@ -33,10 +53,7 @@ function CommentSection({ type, id }: CommentProps) {
                 }}
                 isNew
             >
-                <TextInput.Formik name="text" placeholder="What do you know?" multiline />
-                <div className={styles.ButtonFooter}>
-                    <SaveButton text="Add comment" />
-                </div>
+                <InnerForm />
             </Form>
         </div>
     );

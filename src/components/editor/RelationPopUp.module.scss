@@ -4,7 +4,7 @@ $paddingY: 7px;
 $height: 43px;
 
 .TextBox {
-    padding: $paddingY 10px;
+    padding: $paddingY;
     background-color: #efefef;
     border-radius: 10px;
     transition: all 0.5s;
@@ -14,19 +14,30 @@ $height: 43px;
     min-width: 100%;
     margin: 0;
     text-align: center;
-}
-
-.RelationInputsContainer {
     display: flex;
     align-items: center;
-    height: $height * 2;
-    width: 100%;
 }
+
 .RelationDefinitionContainer {
     position: relative;
-    height: $height * 4;
     min-width: 300px;
     margin-bottom: 7px;
+
+    &.EditMode {
+        height: $height * 4;
+        .RelationInputsContainer { height: $height * 2; }
+    }
+
+    .RelationInputsContainer {
+        display: flex;
+        height: $height;
+        align-items: center;
+        width: 100%;
+    }
+
+    .DisplayRelation {
+        padding: 0 $paddingY;
+    }
 }
 
 .EmotionBarContainer {

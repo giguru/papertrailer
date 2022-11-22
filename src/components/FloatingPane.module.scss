@@ -15,12 +15,11 @@
         font-size: 18px;
     }
     .Footer {
-        margin: $space -$space 0 -$space;
         padding: $space;
         background-color: $zinc200;
     }
     .Content {
-        padding: 5px 15px 0 15px;
+        padding: $space;
     }
 
     .CloseButton {
