@@ -25,7 +25,7 @@ function LoginPage() {
                     if (data?.token) {
                         auth.storeLogin(data.token);
                     }
-                    navigate(routes.mySources);
+                    navigate(routes.myFiles);
                 }}
                 isNew
             >

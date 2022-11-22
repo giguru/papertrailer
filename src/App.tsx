@@ -67,7 +67,7 @@ function App() {
                                 <Route index element={<Home />} />
                                 <Route path={routes.home} element={<Home />} />
                                 <Route path={routes.login} element={<LoginPage />} />
-                                <Route path={routes.mySources} element={<Sources />} />
+                                <Route path={routes.myFiles} element={<Sources />} />
                                 <Route path={routes.publicNets} element={<PublicNets />} />
                                 <Route path={routes.editFile(':fileId')} element={<Editor />} />
                             </Route>

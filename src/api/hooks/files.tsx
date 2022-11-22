@@ -23,7 +23,8 @@ export function useFile(id: string | number, params: Record<string, any> | undef
 export function useFiles({ with: withParam }: { with?: string[] }) {
     const { data: fullData, error, isLoading, isFetching } = useQuery(
         ['files'],
-        () => axios.get<ServerIndexResponse<ApiFileInterface[]>>(`/files`, { params: { _with: withParam || [] }})
+        () => axios.get<ServerIndexResponse<ApiFileInterface[]>>(`/files`, { params: { _with: withParam || [] }}),
+        { retry: 2 },
     );
 
     const returnData : ApiFileInterface[] | undefined = fullData?.data.data || undefined;

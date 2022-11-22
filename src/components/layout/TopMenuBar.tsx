@@ -41,7 +41,7 @@ type ApiEndpoint = string;
 type PageType = {[label: string] : ApiEndpoint };
 
 const pages : PageType = {
-    'My sources': routes.mySources,
+    'My files': routes.myFiles,
 };
 
 const publicPages : PageType = {

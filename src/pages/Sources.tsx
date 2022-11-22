@@ -17,7 +17,11 @@ const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
 
     return (
         <Page>
-            <Page.Header>My sources</Page.Header>
+            <Page.Header>My files</Page.Header>
+            <p>
+                Files are the core of Papertrailer. To create a relation between two files, please upload the files,
+                select some text and the rest will show itself!
+            </p>
             {error ? <span>{JSON.stringify(error)}</span> : null}
             {isLoading ? <Loader /> : null}
             {Array.isArray(files) && (

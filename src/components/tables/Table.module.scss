@@ -15,7 +15,7 @@
         border-bottom: 1px solid $zinc300;
 
         td {
-            padding: 7px 10px;
+            padding: $space $spaceXs;
             &:first-of-type {
                 border-left: 1px solid $zinc300;
             }
