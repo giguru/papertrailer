@@ -5,5 +5,14 @@
         color: $zinc700;
         text-transform: none;
         font-weight: 500;
+
     }
+}
+.Logo {
+    font-family: monospace;
+    letter-spacing: .3rem;
+    text-decoration: none;
+    font-weight: bold;
+    color: $emerald700;
+    margin-right: $space * 2;
 }

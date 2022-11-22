@@ -18,6 +18,24 @@ import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
 
+function Logo () {
+    return (
+
+        <Link to={routes.home} className={styles.Logo}>
+            {'PAPERTRAILER'.split('').map((char, idx) => (
+                <span
+                    key={idx}
+                    style={{
+                        top: ([11, 10, 9, 3, 4].indexOf(idx) > -1 ? 2 : 0) + ([1].indexOf(idx) > -1 ? -2 : 0),
+                        position: 'relative',
+                    }}
+                >
+                    {char}
+                </span>
+            ))}
+        </Link>
+    );
+}
 
 type ApiEndpoint = string;
 type PageType = {[label: string] : ApiEndpoint };
@@ -60,25 +78,7 @@ const TopMenuBar = () => {
         <AppBar position="static" variant="outlined" className={styles.Toolbar}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        <Link to={routes.home}>
-                            PAPERTRAILER
-                        </Link>
-                    </Typography>
+                    <Logo />
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
