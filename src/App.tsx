@@ -2,6 +2,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 import axios from 'axios';
+import './sass/global.scss';
 import {createTheme, ThemeProvider} from "@mui/material";
 import { Routes, Route } from "react-router";
 import TopMenuBar from './components/layout/TopMenuBar';
@@ -19,6 +20,11 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const queryClient = new QueryClient({});
 const theme = createTheme({
+    typography: {
+        body1: {
+            lineHeight: 3,
+        },
+    },
     components: {
         // Name of the component
         MuiButton: {

@@ -31,6 +31,13 @@ const InnerForm : React.FC<InnerFormInterface> = ({ handleSubmit, children }: In
     );
 }
 
+export type FormProps<TResponseData> = {
+    isNew: boolean;
+    endpoint: string;
+    children: React.ReactNode,
+    onSuccess?: (data: ServerResponse<TResponseData>) => void,
+    initialFormData?: Record<string, any>
+}
 
 function Form<TInputObject extends FormikValues, TResponseData = TInputObject>({
     isNew,
@@ -38,13 +45,7 @@ function Form<TInputObject extends FormikValues, TResponseData = TInputObject>({
     children,
     onSuccess,
     initialFormData = undefined,
-}: {
-    isNew: boolean;
-    endpoint: string;
-    children: React.ReactNode,
-    onSuccess?: (data: ServerResponse<TResponseData>) => void,
-    initialFormData?: Record<string, any>,
-}) {
+}: FormProps<TResponseData>) {
     const shouldFetch = !initialFormData;
     const timeoutRef = useRef<NodeJS.Timeout>();
     const [submitError, setSubmitError] = useState('')

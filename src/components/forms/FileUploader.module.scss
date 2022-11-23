@@ -1,0 +1,41 @@
+
+.root {
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+
+    &:hover p, &:hover svg, & img {
+        opacity: 1;
+    }
+
+    &p, svg {
+        opacity: 0.4;
+    }
+
+    &:hover img {
+        opacity: 0.3;
+    }
+}
+
+.noMouseEvent {
+    pointer-events: none;
+}
+
+.iconText {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+}
+
+.onDragOver {
+    img {
+        opacity: 0.3;
+    }
+
+    &p, svg {
+        opacity: 1;
+    }
+}
+

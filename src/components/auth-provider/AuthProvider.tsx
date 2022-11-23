@@ -48,7 +48,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setToken(null);
         nav(routes.publicNets);
     };
-    console.log({ error, fullData })
 
     return (
         <AuthContext.Provider value={{

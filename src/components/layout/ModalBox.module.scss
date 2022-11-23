@@ -1,0 +1,30 @@
+@import "src/sass/variables";
+
+.Container {
+    display: flex;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: flex-start;
+
+    width: 100vw;
+
+    .ModalBox {
+        width: 600px;
+        display: inline-flex;
+        flex-direction: column;
+        align-self: center;
+        background-color: #fff;
+        margin: 5vw $space;
+        border-radius: $borderRadiusLg;
+        box-shadow: $boxShadow;
+        border: 1px solid $zinc500;
+
+        .Content {
+            padding: $space;
+        }
+        .Header {
+            font-size: $fontSizeLg;
+            padding: $space;
+        }
+    }
+}
