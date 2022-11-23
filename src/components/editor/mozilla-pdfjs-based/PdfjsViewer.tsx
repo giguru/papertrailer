@@ -35,7 +35,7 @@ function PdfjsViewer({ file, relations, PageChildComponent }: { file: ApiFileInt
             const pdfJS = await import('pdfjs-dist/build/pdf');
             pdfJS.GlobalWorkerOptions.workerSrc =
                 window.location.origin + '/pdf.worker.min.js';
-            const loadingTask : PDFDocumentLoadingTask = pdfJS.getDocument(examplePdfs[fileId] || examplePdfs["1"])
+            const loadingTask : PDFDocumentLoadingTask = pdfJS.getDocument(file.file_url)
             setPdf(await loadingTask.promise);
         })()
     }, []);
