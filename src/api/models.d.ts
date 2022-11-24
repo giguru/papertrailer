@@ -11,6 +11,8 @@ type ApiEmotionInterface = {
     emotion: EmotionValue
 }
 
+export type CommentType = 'relation' | 'file' | 'comment'
+
 type ApiEmotionCounts = {
     counts: Record<EmotionValue, number>
     my: ApiEmotionInterface
@@ -31,9 +33,13 @@ export type ApiUserInterface = Timestamps & {
 
 type ApiCommentsInterface = Timestamps & {
     id: number
+    type: CommentType
     created_by_id: number
     created_by: ApiUserInterface,
+    file_bounding_blocks?: ApiFileBoundingBlockInterface[]
     text: string
+    comments?: ApiCommentsInterface[]
+    comments_count?: number
 }
 
 type ApiFileBoundingBlockInterface = Timestamps & {

@@ -3,6 +3,7 @@
 .DividerWithText {
     display: flex;
     padding: 25px 0;
+    position: relative;
 
     &::before {
         display: flex;
@@ -12,6 +13,13 @@
     }
 
     .Text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         background-color: #fff;
+        padding: 0 $spaceLg;
+        color: $zinc700;
+        font-weight: 500;
     }
 }

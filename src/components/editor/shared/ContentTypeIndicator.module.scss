@@ -3,9 +3,15 @@
 .ContentTypeIndicator {
     position: absolute;
     top: 0;
-    right: 100%;
     padding: $space;
     color: $zinc500;
     font-size: $fontSm;
     text-transform: uppercase;
+
+    &.left {
+        right: 100%;
+    }
+    &.right {
+        left: 100%;
+    }
 }

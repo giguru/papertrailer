@@ -5,7 +5,7 @@ import {ServerIndexResponse} from "../api";
 
 
 export function useFileRelations(id: string | number) {
-    const { data: fullData, error, isLoading, isFetching } = useQuery(
+    const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
         ['files', id, 'relations'],
         () => axios.get<ServerIndexResponse<ApiRelationInterface[]>>(`/files/${id}/relations`)
     );
@@ -17,5 +17,6 @@ export function useFileRelations(id: string | number) {
         error,
         isLoading,
         isFetching,
+        refetch,
     };
 }

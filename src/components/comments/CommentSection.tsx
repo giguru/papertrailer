@@ -1,5 +1,5 @@
-import React from 'react';
-import {CommentType, useComments} from "../../api/hooks/comments";
+import React, {useRef} from 'react';
+import {useComment, useComments} from "../../api/hooks/comments";
 import Comment from './Comment';
 import {Form, TextInput} from "../forms";
 import {SaveButton} from "../forms/Form";
@@ -7,10 +7,12 @@ import styles from './CommentSection.module.scss';
 import NoResults from "../NoResults";
 import Loader from "../loader/Loader";
 import {useField} from "formik";
+import {CommentType} from "../../api/models";
+import Alert from "@mui/material/Alert";
 
 interface CommentProps {
     type: CommentType
-    id: number
+    id: number | string
 }
 
 const MAX_COMMENT_LENGTH = 255;
@@ -43,20 +45,55 @@ function CommentSection({ type, id }: CommentProps) {
                     ? comments?.map((comment) => <Comment {...comment} key={comment.id} />)
                     : <NoResults>Be the first to react</NoResults>}
             </ul>
-            <Form
-                endpoint="comments"
-                onSuccess={() => refetch()}
-                initialFormData={{
-                    text: '',
-                    type,
-                    type_id: id,
-                }}
-                isNew
-            >
-                <InnerForm />
-            </Form>
+            <CommentSectionForm onSuccess={() => refetch()} type={type} id={id} />
         </div>
     );
 }
+
+function CommentThread({ id }: Pick<CommentProps, 'id'>) {
+    const { comment, refetch, isLoading, error } = useComment(id, { _with: ['comments'] });
+
+    if (isLoading) return <Loader />;
+
+    return comment ? (
+        <div className={styles.CommentSection}>
+            <b className={styles.MiniHeader}>Original comment</b>
+            <Comment {...comment} key={comment.id} />
+            <br />
+            <b className={styles.MiniHeader}>Reactions</b>
+            <ul className={styles.CommentList}>
+                {comment.comments?.length
+                    ? comment.comments?.map((subComment) => <Comment {...subComment} key={subComment.id} />)
+                    : <NoResults>Start a discussion.</NoResults>}
+            </ul>
+            {comment && (
+                <CommentSectionForm onSuccess={() => refetch()} type="comment" id={id} />
+            )}
+        </div>
+    ) : (typeof error === 'string' ? <Alert variant="outlined" color="error">{error}</Alert> : null);
+}
+
+function CommentSectionForm({ onSuccess, type, id, initialFormData }: CommentProps & { onSuccess: () => void, initialFormData?: Record<string, any> }) {
+    return (
+        <Form
+            endpoint="comments"
+            onSuccess={onSuccess}
+            initialFormData={{
+                text: '',
+                // Props before can be overwritten.
+                ...(initialFormData || {}),
+                // Props below cannot be overwritten.
+                type,
+                type_id: id,
+            }}
+            isNew
+        >
+            <InnerForm />
+        </Form>
+    )
+}
+
+CommentSection.Form = CommentSectionForm
+CommentSection.Thread = CommentThread
 
 export default CommentSection;

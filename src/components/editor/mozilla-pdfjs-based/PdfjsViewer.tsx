@@ -4,29 +4,38 @@ import {PDFDocumentProxy} from "pdfjs-dist/types/src/display/api";
 import PageContainer from "../shared/PageContainer";
 import PdfJsPage from "./PdfJsPage";
 import {useFileRelations} from "../../../api/hooks/relations";
-import {ApiFileInterface, ApiRelationInterface} from "../../../api/models";
+import {ApiCommentsInterface, ApiFileInterface, ApiRelationInterface} from "../../../api/models";
 import RelationsPageInterface from "../shared/RelationsInterface";
 import {useEditorViewerContext} from "../EditorViewerContext";
+import CommentsPageInterface from "../shared/CommentsPageInterface";
+
+type PagesType = PDFPageProxy[];
 
 // We import this here so that it's only loaded during client-side rendering.
-
-const examplePdfs: Record<number, string> = {
-    1: '/attention-is-all-you-need.pdf',
-    2: '/reproducibility-is-a-process.pdf',
-};
+function sortPerPageIndex<T extends ApiCommentsInterface | ApiRelationInterface>(items: T[], pages: PagesType) {
+    const perIndex : Record<number, Record<number, T>> = {}
+    if (pages && items) {
+        items?.forEach((r) => {
+            r.file_bounding_blocks?.forEach((fbb) => {
+                if (!perIndex[fbb.page_index]) {
+                    perIndex[fbb.page_index] = {}
+                }
+                perIndex[fbb.page_index][r.id] = r
+            })
+        })
+    }
+    return perIndex
+}
 
 
 /**
  * Render a PDF and all its pages.
- *
- * @param file
- * @constructor
  */
-function PdfjsViewer({ file, relations, PageChildComponent }: { file: ApiFileInterface, relations: ApiRelationInterface[], PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
+function PdfjsViewer({ file, relations, PageChildComponent, comments }: { file: ApiFileInterface, comments: ApiCommentsInterface[], relations: ApiRelationInterface[], PageChildComponent?: React.FunctionComponent<{ pageIndex: number }> }) {
     const { scaler } = useEditorViewerContext()
     const fileId = file.id;
     const [pdf, setPdf] = useState<PDFDocumentProxy | undefined>()
-    const [pages, setPages] = useState<PDFPageProxy[]>([]);
+    const [pages, setPages] = useState<PagesType>([]);
 
     useEffect(() => {
         (async function () {
@@ -51,20 +60,8 @@ function PdfjsViewer({ file, relations, PageChildComponent }: { file: ApiFileInt
         }
     }, [pdf])
 
-    const relationsPerPageIndex = useMemo(() => {
-        const perIndex : Record<number, Record<number, ApiRelationInterface>> = {}
-        if (pages && relations) {
-            relations?.forEach((r) => {
-                r.file_bounding_blocks?.forEach((fbb) => {
-                    if (!perIndex[fbb.page_index]) {
-                        perIndex[fbb.page_index] = {}
-                    }
-                    perIndex[fbb.page_index][r.id] = r
-                })
-            })
-        }
-        return perIndex
-    }, [relations, pages])
+    const relationsPerPageIndex = useMemo(() => sortPerPageIndex(relations, pages), [relations, pages])
+    const commentsPerPageIndex = useMemo(() => sortPerPageIndex(comments, pages), [comments, pages])
 
     return (
         <>
@@ -77,10 +74,11 @@ function PdfjsViewer({ file, relations, PageChildComponent }: { file: ApiFileInt
                             pageIndex={pageIndexNumber}
                             fileId={fileId}
                         />
-                        {relationsPerPageIndex[pageIndexNumber] && (
-                            <RelationsPageInterface
-                                relations={Object.values(relationsPerPageIndex[pageIndexNumber])}
-                            />
+                        {relationsPerPageIndex[pageIndexNumber] && relationsPerPageIndex[pageIndexNumber] && (
+                            <RelationsPageInterface relations={Object.values(relationsPerPageIndex[pageIndexNumber])} />
+                        )}
+                        {commentsPerPageIndex && commentsPerPageIndex[pageIndexNumber] && (
+                            <CommentsPageInterface comments={Object.values(commentsPerPageIndex[pageIndexNumber])} />
                         )}
                         {PageChildComponent && <PageChildComponent pageIndex={pageIndexNumber} />}
                     </PageContainer>

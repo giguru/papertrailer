@@ -12,8 +12,11 @@ import RadioButtonsGroup from "../components/forms/RadioButtonsGroup";
 import Button from "../components/button/Button";
 import {useParams} from "react-router";
 import {relationOptions, RelationValue} from "../utils/enums";
-import RelationPopUp from "../components/editor/RelationPopUp";
+import RelationPopUp, {selectionToFileBoundingBlock} from "../components/editor/RelationPopUp";
 import Snippet from "../components/snippets/Snippet";
+import styles from './Editor.module.scss';
+import DividerWithText from "../components/DividerWithText";
+import CommentSection from "../components/comments/CommentSection";
 
 const mainViewEditorId: string = 'main';
 const otherViewEditorId: string = 'other';
@@ -40,42 +43,63 @@ function MainView() {
                 <EditorViewer
                     fileId={fileId}
                     isActive={activeIndex === 0}
-                    Component={({ selection }) => (
+                    Component={({ selection, refreshData }) => (
                         <SelectionPopUp
                             selection={selection}
                             onCancel={clearSelectedContent}
                         >
-                            <Formik
-                                initialValues={initialValues}
-                                onSubmit={(values: MainViewFlowData, { setSubmitting }: FormikHelpers<MainViewFlowData>) => {
-                                    addFlowData({
-                                        relation: values.relation,
-                                    });
-                                    setSelectedBoundingBoxes(mainViewEditorId, selection);
-                                    setSubmitting(false);
-                                }}
-                            >
-                                {(formikProps) => (
-                                    <form onSubmit={formikProps.handleSubmit}>
-                                        <Snippet text={selection.text} />
-                                        <div>
+                            <div className={styles.InitialSelectionPopUp}>
+                                <Snippet text={selection.text} />
+                                <DividerWithText text="Link to another file" />
+                                <Formik
+                                    initialValues={initialValues}
+                                    onSubmit={(values: MainViewFlowData, { setSubmitting }: FormikHelpers<MainViewFlowData>) => {
+                                        addFlowData({
+                                            relation: values.relation,
+                                        });
+                                        setSelectedBoundingBoxes(mainViewEditorId, selection);
+                                        setSubmitting(false);
+                                    }}
+                                >
+                                    {(formikProps) => (
+                                        <form onSubmit={formikProps.handleSubmit}>
                                             <RadioButtonsGroup.Formik
-                                                label="Relation"
                                                 options={Object.values(relationOptions)}
                                                 name="relation"
+                                                label="What kind of relation?"
                                             />
-                                        </div>
-                                        <Button
-                                            onClick={async () => {
-                                                openView(1);
-                                                await formikProps.submitForm();
+                                            <div className={styles.RelationOptionFooter}>
+                                                <Button
+                                                    onClick={async () => {
+                                                        openView(1);
+                                                        await formikProps.submitForm();
+                                                    }}
+                                                    variant="contained"
+                                                >
+                                                    Link to other document
+                                                </Button>
+                                            </div>
+                                        </form>
+
+                                    )}
+                                </Formik>
+                                {fileId && (
+                                    <>
+                                        <DividerWithText text="OR add a comment" />
+                                        <CommentSection.Form
+                                            type="file"
+                                            id={fileId}
+                                            onSuccess={() => {
+                                                clearSelectedContent();
+                                                refreshData();
                                             }}
-                                        >
-                                            Link to other document
-                                        </Button>
-                                    </form>
+                                            initialFormData={{
+                                                file_bounding_blocks: [selectionToFileBoundingBlock(selection)],
+                                            }}
+                                        />
+                                    </>
                                 )}
-                            </Formik>
+                            </div>
                         </SelectionPopUp>
                     )}
                 />
@@ -131,7 +155,7 @@ function OtherView() {
                 ? (
                     <EditorViewer
                         fileId={selectedFile.id}
-                        Component={({ selection: selectionB }) => {
+                        Component={({ selection: selectionB, refreshData }) => {
                             const initialFormData = {
                                 fileA: selectedFile.id,
                                 fileB: fileId,
@@ -162,6 +186,7 @@ function OtherView() {
                                         onSuccess={() => {
                                             setSelectedBoundingBoxes(mainViewEditorId, undefined);
                                             cancel();
+                                            refreshData();
                                         }}
                                     />
                                 </SelectionPopUp>

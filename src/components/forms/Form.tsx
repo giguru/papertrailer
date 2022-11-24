@@ -109,9 +109,13 @@ function Form<TInputObject extends FormikValues, TResponseData = TInputObject>({
     return (
         <Formik
             initialValues={data}
-            onSubmit={(values: TInputObject, { setSubmitting, setFieldTouched, setErrors }: FormikHelpers<TInputObject>) => mutate(values, {
+            onSubmit={(values: TInputObject, { setSubmitting, resetForm, setErrors }: FormikHelpers<TInputObject>) => mutate(values, {
                 onSettled: () => {
                     setSubmitting(false);
+                },
+                onSuccess: () => {
+                    // Reset the form on success, so that the user fill in the form again.
+                    resetForm(data)
                 },
                 // @ts-ignore
                 onError: (e: AxiosError<ServerErrorResponse<TInputObject>>) => {

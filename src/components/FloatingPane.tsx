@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import styles from './FloatingPane.module.scss';
 
 interface PositionInterface {
-    left: number,
-    top: number,
+    left?: number | string,
+    top: number | string,
+    right?: number | string,
 }
 
 interface FloatingPaneInterface {
@@ -24,6 +25,7 @@ function FloatingPane({ children, position, onClose, header, className }: Floati
             className={`${styles.FloatingPane} ${className}`}
             style={{
                 left: position.left,
+                right: position.right,
                 top: position.top,
             }}
         >
