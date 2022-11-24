@@ -45,10 +45,10 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                     />
                 </ModalBox.ViaButton>
             </Page.Header>
-            <p>
+            <Paragraph>
                 Files are the core of Papertrailer. To create a relation between two files, please upload the files,
                 select some text and the rest will show itself!
-            </p>
+            </Paragraph>
             {error ? <span>{JSON.stringify(error)}</span> : null}
             {isLoading ? <Loader /> : null}
             {Array.isArray(files) && (

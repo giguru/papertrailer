@@ -16,3 +16,19 @@
     color: $emerald700;
     margin-right: $space * 2;
 }
+
+.SearchBar {
+    padding: $spaceSm $space;
+    width: 30%;
+    font-size: $fontSize;
+    min-width: 150px;
+    border-radius: $borderRadius;
+    border: 1px solid $zinc100;
+    background-color: $zinc50;
+    margin-right: $spaceLg;
+
+    &::placeholder {
+        font-style: italic;
+        color: $emerald400;
+    }
+}

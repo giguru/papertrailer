@@ -139,7 +139,7 @@ const TopMenuBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        <Logo />
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {Object.keys(publicPages).map((label) => (
@@ -156,6 +156,7 @@ const TopMenuBar = () => {
                             </Button>
                         ))}
                     </Box>
+                    <input className={styles.SearchBar} placeholder="Search files, relations or comments..." />
                     {loggedInUser ? (
                         <>
                             <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
