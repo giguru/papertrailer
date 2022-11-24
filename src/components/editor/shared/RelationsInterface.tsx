@@ -11,6 +11,7 @@ import DateSpan from "../../texts/DateSpan";
 import UserNameSpan from "../../texts/UserNameSpan";
 import Header from "../../texts/Header";
 import StatStrip from "../../texts/StatStrip";
+import ContentTypeIndicator from "./ContentTypeIndicator";
 
 const relevantForFile = (file: ApiFileInterface | undefined, fileId: number) => file && file.id === fileId
 type ExtendedApiRelationInterface = ApiRelationInterface & { indent: number }
@@ -144,6 +145,7 @@ export default function RelationsInterface({ relations }: { relations: ApiRelati
 
     return (
         <>
+            <ContentTypeIndicator position="left">Relations</ContentTypeIndicator>
             {sortedRelations.map(relation => <RelationDisplay relation={relation} key={relation.id} />)}
         </>
     )

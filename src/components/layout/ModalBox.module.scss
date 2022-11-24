@@ -9,22 +9,38 @@
     width: 100vw;
 
     .ModalBox {
-        width: 600px;
         display: inline-flex;
         flex-direction: column;
         align-self: center;
         background-color: #fff;
         margin: 5vw $space;
-        border-radius: $borderRadiusLg;
+        border-radius: $borderRadius;
         box-shadow: $boxShadow;
         border: 1px solid $zinc500;
 
         .Content {
-            padding: $space;
+            padding: $spaceXl;
         }
         .Header {
             font-size: $fontSizeLg;
-            padding: $space;
+            padding: $spaceXl;
         }
+        .Footer {
+            text-align: center;
+            padding: $spaceXl;
+        }
+        &.xs {
+            width: 400px;
+            text-align: center;
+            .Content {
+                align-self: center;
+            }
+            .Header {
+                text-align: center;
+                align-self: center;
+            }
+        }
+        &.sm { width: 500px; }
+        &.md { width: 700px; }
     }
 }

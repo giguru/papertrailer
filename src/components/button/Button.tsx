@@ -7,9 +7,9 @@ type ButtonInterface = Pick<MuiButtonProps, 'children' | 'onClick' | 'variant' |
     isBusy?: boolean
 };
 
-function Button({ children, variant = 'outlined', onClick = undefined, type, className, isBusy, size }: ButtonInterface) {
+function Button({ children, variant = 'outlined', onClick = undefined, type, className, isBusy, size, color }: ButtonInterface) {
     return (
-        <MuiButton onClick={onClick} variant={variant} type={type} className={className} disabled={isBusy} size={size}>
+        <MuiButton onClick={onClick} variant={variant} type={type} className={className} disabled={isBusy} size={size} color={color}>
             {children}
             {isBusy && <Loader size="inline" />}
         </MuiButton>

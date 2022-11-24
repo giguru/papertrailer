@@ -57,7 +57,6 @@ function Form<TInputObject extends FormikValues, TResponseData = TInputObject>({
             onSuccess(resp.data);
         }
         setSubmitError('');
-        console.log(resp.data);
         setFeedback(resp.data?.message || 'Saved.');
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => {

@@ -32,6 +32,17 @@ $fuchsia700: rgb(162 28 175);
 $fuchsia800: rgb(134 25 143);
 $fuchsia900: rgb(112 26 117);
 
+$rose50: rgb(255 241 242);
+$rose100: rgb(255 228 230);
+$rose200: rgb(254 205 211);
+$rose300: rgb(253 164 175);
+$rose400: rgb(251 113 133);
+$rose500: rgb(244 63 94);
+$rose600: rgb(225 29 72);
+$rose700: rgb(190 18 60);
+$rose800: rgb(159 18 57);
+$rose900: rgb(136 19 55);
+
 $borderRadius: 7px;
 $borderRadiusLg: 15px;
 
@@ -43,6 +54,8 @@ $fontSizeLg: 1.5rem;
 $boxShadow: 1px 1px 5px rgba(100, 100, 100, 0.5);
 
 $space: 15px;
+$spaceXl: 1.5 * $space;
+$spaceLg: 1.2 * $space;
 $spaceSm: 0.8 * $space;
 $spaceXs: 0.5 * $space;
 $spaceXxs: 0.3 * $space;

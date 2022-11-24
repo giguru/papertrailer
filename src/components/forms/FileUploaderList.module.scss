@@ -1,0 +1,22 @@
+@import "src/sass/variables";
+
+.UploadedList {
+    margin: $space 0;
+    padding: 0;
+
+    .UploadedItem {
+        border-radius: $borderRadius;
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        padding: $spaceXxs $space;
+
+        .Icon {
+            color: $emerald500;
+            width: 40px;
+        }
+        .Title {
+
+        }
+    }
+}

@@ -61,6 +61,7 @@ type ApiFileInterface = Timestamps & {
     size_width: number,
     size_height: number,
     comments_count: number,
+    relations_count: number,
     processed: 0 | 1,
     processed_at: string | null,
     parent_file_id: number | null,

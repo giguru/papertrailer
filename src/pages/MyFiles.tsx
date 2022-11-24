@@ -12,6 +12,7 @@ import ModalBox from "../components/layout/ModalBox";
 import Paragraph from "../components/texts/Paragraph";
 import {FileUpload} from "../components/forms/FileUploader";
 import FileUploaderList from "../components/forms/FileUploaderList";
+import {Row} from "react-table";
 
 interface SourcesProp {
 
@@ -19,14 +20,19 @@ interface SourcesProp {
 
 const acceptTypes = '.pdf, .jpg, .jpeg, .png, .docx, .doc, .pptx, .ppt';
 
-const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
+const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
     const { error, files, isLoading } = useFiles({ with: ['createdBy'] });
 
     return (
         <Page>
             <Page.Header>
                 My files
-                <ModalBox.ViaButton buttonText="Add new modal" header="Upload new files">
+                <ModalBox.ViaButton
+                    buttonText="New file"
+                    header="Upload new files"
+                    closeButtonText="Finish uploading"
+                    variant="outlined"
+                >
                     <Paragraph>
                         The following files types are accepted: &nbsp;
                         <strong className="colorPrimary">{acceptTypes}</strong>
@@ -50,9 +56,10 @@ const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
                     rows={files}
                     linkBuilder={({ row: source }) => routes.editFile(source.id)}
                     columns={[
-                        { Header: 'Title', accessor: 'title' },
-                        { Header: 'Description', accessor: 'description' },
-                        { Header: 'Created', accessor: 'created_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
+                        { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => <><strong>{value}</strong><br/>{row.original.description && <small>{row.original.description}</small>}</> },
+                        { Header: 'Comments', accessor: 'comments_count' },
+                        { Header: 'Relations', accessor: 'relations_count' },
+                        { Header: 'Uploaded at', accessor: 'created_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
                         { Header: 'Uploader', accessor: 'created_by', Cell: ({ value }: { value: any }) => value && <UserNameSpan user={value} /> },
                         { Header: 'Last modified', accessor: 'updated_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
                     ]}
@@ -62,4 +69,4 @@ const Sources: React.FC<SourcesProp> = (props: SourcesProp) => {
     );
 };
 
-export default Sources;
+export default MyFiles;

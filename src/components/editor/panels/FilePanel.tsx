@@ -9,17 +9,26 @@ import moment from "moment";
 import {ApiFileInterface} from "../../../api/models";
 import DataRow from "../../forms/DataRow";
 import RelationsPerCategory from "../RelationsPerCategory";
+import Box from "@mui/material/Box";
+import DeleteButton from "../../forms/DeleteButton";
+import {useNavigate} from "react-router";
+import {routes} from "../../../utils/routes";
 
 function InnerForm() {
     const { relations } = useEditorViewerContext();
     const { values: file } = useFormikContext<ApiFileInterface>();
+    const navigate = useNavigate();
+    const afterDelete = () => navigate(routes.myFiles);
 
     return (
         <>
             <TextInput.Formik name="title" label="Title" />
             <TextInput.Formik name="description" label="Description" multiline />
             <TextInput.Formik name="origin_url" label="Origin URL" />
-            <SaveButton />
+            <Box style={{ justifyContent: 'space-between', display: 'flex' }}>
+                <DeleteButton endpoint={`/files/${file.id}`} onSuccess={afterDelete} />
+                <SaveButton />
+            </Box>
 
             <br />
             <br />

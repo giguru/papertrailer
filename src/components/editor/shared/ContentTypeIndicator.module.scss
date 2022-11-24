@@ -1,0 +1,11 @@
+@import "src/sass/variables";
+
+.ContentTypeIndicator {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    padding: $space;
+    color: $zinc500;
+    font-size: $fontSm;
+    text-transform: uppercase;
+}
