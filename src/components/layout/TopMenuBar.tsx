@@ -18,6 +18,71 @@ import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
 import NewFileButton from "../files/NewFileButton";
+import {useState} from "react";
+import axios from "axios";
+import {useQuery} from "react-query";
+import {ServerIndexResponse} from "../../api/api";
+import {ApiCommentsInterface, ApiSearchInterface} from "../../api/models";
+import {useTimeout} from "../../utils/hooks/useTimeout";
+
+function useSearch() {
+    const [value, setValue] = useState('');
+    const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
+        ['search', value],
+        () => axios.get<ServerIndexResponse<ApiSearchInterface[]>>(`/search?q=${value}`),
+        { enabled: Boolean(value) }
+    );
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+    };
+
+    const results : ApiSearchInterface[] | undefined = fullData?.data.data || undefined;
+
+    return {
+        value,
+        results,
+        onChange,
+        error,
+        isFetching,
+    }
+
+}
+
+function SearchBar() {
+    const [focus, setFocus] = useState(false)
+    const { value, onChange, results } = useSearch();
+    const { doTimeout } = useTimeout({ time: 1000 });
+
+    return (
+        <div className={[styles.SearchBarContainer, focus ? styles.Focus : ''].join(' ')}>
+            <input
+                className={styles.SearchBar}
+                placeholder="Search files, relations or comments..."
+                value={value}
+                onFocus={(e) => setFocus(true)}
+                onBlur={(e) => doTimeout(() => setFocus(false))}
+                onChange={onChange}
+            />
+            {focus && (
+                <div className={styles.SearchBarResultsContainer}>
+                    <div className={styles.ResultsList}>
+                        {Array.isArray(results) && results.map((item) => (
+                            <Link to={routes.editFile(item.object.id)} className={styles.ResultItem} key={item.object.id}>
+                                <div className={styles.PreHeader}>
+                                    <span className={styles.Type}>{item.type}</span>
+                                    <span className={styles.Div} />
+                                    <span className={styles.Id}>{item.object.id}</span>
+                                </div>
+                                <span className={styles.Title}>{item.title}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
 
 function Logo () {
     return (
@@ -78,7 +143,7 @@ const TopMenuBar = () => {
     return (
         <AppBar position="static" variant="outlined" className={styles.Toolbar}>
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters sx={{ columnGap: '1rem' }}>
                     <Logo />
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -157,7 +222,7 @@ const TopMenuBar = () => {
                             </Button>
                         ))}
                     </Box>
-                    <input className={styles.SearchBar} placeholder="Search files, relations or comments..." />
+                    <SearchBar />
                     <NewFileButton />
                     {loggedInUser ? (
                         <>

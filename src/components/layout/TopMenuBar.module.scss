@@ -17,18 +17,73 @@
     margin-right: $space * 2;
 }
 
-.SearchBar {
-    padding: $spaceSm $space;
-    width: 30%;
-    font-size: $fontSize;
-    min-width: 150px;
-    border-radius: $borderRadius;
-    border: 1px solid $zinc100;
-    background-color: $zinc50;
+.SearchBarContainer {
+    position: relative;
     margin-right: $spaceLg;
+    min-width: 150px;
+    width: 20%;
+    transition: all $animationSpeedSlow;
+    z-index: $zIndexSearchBarResults;
 
-    &::placeholder {
-        font-style: italic;
-        color: $emerald400;
+    &.Focus {
+        min-width: 600px;
+        max-width: 100vw;
+    }
+
+    .SearchBar {
+        width: 100%;
+        padding: $spaceSm $space;
+        font-size: $fontSize;
+        border-radius: $borderRadius;
+        border: 1px solid $zinc100;
+        background-color: $zinc50;
+
+        &::placeholder {
+            font-style: italic;
+            color: $emerald400;
+        }
+
+    }
+    .SearchBarResultsContainer {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: $zinc50;
+        padding: $spaceSm;
+        border-left: 1px solid $zinc300;
+        border-right: 1px solid $zinc300;
+        border-bottom: 1px solid $zinc300;
+        box-shadow: $boxShadow;
+        border-bottom-right-radius: $borderRadiusLg;
+        border-bottom-left-radius: $borderRadiusLg;
+
+        .ResultsList {
+            .ResultItem {
+                display: flex;
+                flex-direction: column;
+                background-color: #fff;
+                padding: $spaceXxs $spaceSm;
+                border-radius: $borderRadius;
+                margin-bottom: $spaceXxs;
+                text-decoration: none;
+
+                .PreHeader {
+                    color: $zinc400;
+                    font-size: $fontXs;
+                    margin-bottom: $spaceXxs;
+                }
+                .Title {
+                    font-size: $fontSm;
+                    color: $zinc700;
+                }
+                .Div {
+                    margin-left: $spaceXxs;
+                    border-left: 1px solid $zinc400;
+                    margin-right: $spaceXxs;
+                }
+            }
+        }
     }
 }

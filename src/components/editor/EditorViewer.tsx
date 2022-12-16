@@ -10,6 +10,7 @@ import FilePanel from "./panels/FilePanel";
 import {useFileRelations} from "../../api/hooks/relations";
 import CommentsPanel from "./panels/CommentsPanel";
 import {useComments} from "../../api/hooks/comments";
+import Alert from "@mui/material/Alert";
 
 interface EditorViewerProps {
     Component: React.FunctionComponent<{ selection: AnySelection, refreshData: () => void }>,
@@ -46,10 +47,11 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
         [Component],
     );
 
+    console.log({ error })
     return (
         <div className={`${styles.EditorViewerLayout}`}>
             <EditorViewerContainer className={styles.PageCanvas}>
-                {!isLoading && typeof error === 'string' ? <span>{error}</span> : null}
+                {!isLoading && typeof error === 'string' ? <Alert color="error">{error}</Alert> : null}
                 {isActive && fullData && (
                     <PdfjsViewer
                         relations={relations || []}

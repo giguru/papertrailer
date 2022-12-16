@@ -31,6 +31,14 @@ export type ApiUserInterface = Timestamps & {
     last_name: string
 }
 
+type ApiSearchInterface = {
+    type: 'file' | 'relation'
+    title: string,
+    object: Timestamps & {
+        id: number
+    }
+}
+
 type ApiCommentsInterface = Timestamps & {
     id: number
     type: CommentType
@@ -83,4 +91,5 @@ export {
     ApiFileInterface,
     ApiFileBoundingBlockInterface,
     ApiRelationInterface,
+    ApiSearchInterface,
 }

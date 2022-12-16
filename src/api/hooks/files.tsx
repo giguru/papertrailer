@@ -3,19 +3,27 @@ import axios, {AxiosError} from "axios";
 import {ApiFileInterface} from "../models";
 import {ServerGetResponse, ServerIndexResponse} from "../api";
 import {useDisappearingFeedback} from "../../utils/hooks/useDisappearingFeedback";
+import {useState} from "react";
 
 
 export function useFile(id: string | number, params: Record<string, any> | undefined = undefined) {
+    const [axiosError, setAxiosError] = useState('');
     const { data: fullData, error, isLoading, isFetching } = useQuery(
         ['file', id],
-        () => axios.get<ServerGetResponse<ApiFileInterface>>(`/files/${id}`, { params: params })
+        () => {
+            setAxiosError('');
+            return axios.get<ServerGetResponse<ApiFileInterface>>(`/files/${id}`, { params: params })
+                .catch((err: AxiosError) => {
+                    setAxiosError(err.message)
+                })
+        }
     );
 
     const returnData : ApiFileInterface | undefined = fullData?.data.data || undefined;
 
     return {
         file: returnData,
-        error,
+        error: axiosError || error,
         isLoading,
         isFetching,
     };

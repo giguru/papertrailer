@@ -6,7 +6,7 @@
     background: #fff;
     box-shadow: 0 0 35px rgba(0,0,0,0.3);
     border-radius: $borderRadiusLg;
-    z-index: 1000;
+    z-index: $zIndexFloatingPane;
 
     .Header {
         border-bottom: 1px solid #efefef;
