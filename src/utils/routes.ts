@@ -6,5 +6,6 @@ export const routes = {
     myFiles: '/user/files',
     accountSettings: '/user/settings',
     myProfile: '/user/profile',
-    editFile: (fileId: number | string) => `/editor/${fileId}`
+    editFile: (fileId: number | string) => `/editor/${fileId}`,
+    viewRelation: (fileId: number | string, relationId: number | string) => `/editor/${fileId}?relation_id=${relationId}`,
 }

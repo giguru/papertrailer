@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {useNavigate} from "react-router";
-import {Link} from "react-router-dom";
+import {Link, Search} from "react-router-dom";
 import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
@@ -58,7 +58,18 @@ function useSearch() {
         error,
         isSearching: isFetching || isDelaying,
     }
+}
 
+function searchLink(item: ApiSearchInterface) {
+    if (item.type === 'file') {
+        return routes.editFile(item.object.id)
+    } else if (item.type === 'relation') {
+        const fbbs = item.object.file_bounding_blocks;
+        if (fbbs?.length) {
+            return routes.viewRelation(fbbs[0]?.file_id, item.object.id);
+        }
+    }
+    return '';
 }
 
 function SearchBar() {
@@ -72,8 +83,8 @@ function SearchBar() {
                 className={styles.SearchBar}
                 placeholder="Search files, relations or comments..."
                 value={value}
-                onFocus={(e) => setFocus(true)}
-                onBlur={(e) => doTimeout(() => setFocus(false))}
+                onFocus={() => setFocus(true)}
+                onBlur={() => doTimeout(() => setFocus(false))}
                 onChange={(e) => {
                     e.persist()
                     setFocus(true);
@@ -84,19 +95,31 @@ function SearchBar() {
                 <div className={styles.SearchBarResultsContainer}>
                     {isSearching && <Loader />}
                     <div className={styles.ResultsList}>
-                        {!isSearching && Array.isArray(results) && results.length > 0 && results.map((item) => (
-                            <Link to={routes.editFile(item.object.id)} className={styles.ResultItem} key={item.object.id}>
-                                <div className={styles.PreHeader}>
-                                    <span className={styles.Type}>{item.type}</span>
-                                    <span className={styles.Div} />
-                                    <span className={styles.Id}>{item.object.id}</span>
-                                </div>
-                                <span className={styles.Title} dangerouslySetInnerHTML={{__html: item.title }} />
-                                {item.context && (
-                                    <span className={styles.Snippet} dangerouslySetInnerHTML={{__html: `...${item.context}...` }} />
-                                )}
-                            </Link>
-                        ))}
+                        {!isSearching && Array.isArray(results) && results.length > 0 && results.map((item) => {
+                            const content = (
+                                <>
+                                    <div className={styles.PreHeader}>
+                                        <span className={styles.Type}>{item.type}</span>
+                                        <span className={styles.Div} />
+                                        <span className={styles.Id}>{item.object.id}</span>
+                                    </div>
+                                    <div className={styles.Title} dangerouslySetInnerHTML={{__html: item.title }} />
+                                    {item.context && (
+                                        <span className={styles.Context} dangerouslySetInnerHTML={{__html: item.context }} />
+                                    )}
+                                </>
+                            )
+                            const link = searchLink(item);
+                            return link ? (
+                                <Link to={link} className={styles.ResultItem} key={item.object.id}>
+                                    {content}
+                                </Link>
+                            ) : (
+                                <a className={styles.ResultItem} key={item.object.id}>
+                                    {content}
+                                </a>
+                            );
+                        })}
                     </div>
                     {!isSearching && Array.isArray(results) && results.length === 0 && (
                         <NoResults>No results found</NoResults>

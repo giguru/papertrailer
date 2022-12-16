@@ -32,13 +32,15 @@ export type ApiUserInterface = Timestamps & {
 }
 
 type ApiSearchInterface = {
-    type: 'file' | 'relation'
     title: string,
     context: string,
-    object: Timestamps & {
-        id: number
-    }
-}
+} & ({
+    type: 'relation'
+    object: ApiRelationInterface
+} | {
+    type: 'file'
+    object: ApiFileInterface
+})
 
 type ApiCommentsInterface = Timestamps & {
     id: number

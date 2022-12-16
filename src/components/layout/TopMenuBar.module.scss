@@ -61,28 +61,32 @@
 
         .ResultsList {
             .ResultItem {
-                display: flex;
-                flex-direction: column;
+                display: block;
                 background-color: #fff;
                 padding: $spaceXxs $spaceSm;
                 border-radius: $borderRadius;
                 margin-bottom: $spaceXxs;
                 text-decoration: none;
+                font-size: $fontSm;
+                color: $zinc700;
 
                 .PreHeader {
+                    float: right;
                     color: $zinc400;
                     font-size: $fontXs;
-                    margin-bottom: $spaceXxs;
                 }
                 .Title {
-                    font-size: $fontSm;
-                    color: $zinc700;
+                    font-weight: 500;
                 }
                 .Div {
                     margin-left: $spaceXxs;
                     border-left: 1px solid $zinc400;
                     margin-right: $spaceXxs;
                 }
+                .Context {
+                    text-decoration: none;
+                }
+                clear: both;
             }
         }
     }
