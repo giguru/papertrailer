@@ -6,6 +6,14 @@
         flex: 0 0 100px;
         display: inline-block;
     }
+
+}
+
+.InlineRadioGroup {
+    flex-direction: row;
+    .Inline {
+        display: inline-flex;
+    }
 }
 
 .OptionLabel {

@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import styles from './ModalBox.module.scss';
 import {ButtonProps as MuiButtonProps} from "@mui/material/Button/Button";
+import {Close} from "@mui/icons-material";
 
 interface ModalBoxProps {
     children: React.ReactNode[] | React.ReactNode,
@@ -22,7 +23,8 @@ function ModalBox({header, footer, children, onClose, size }: ModalBoxProps) {
             <div className={styles.Container}>
                 <Box className={[styles.ModalBox, size].join(' ')}>
                     <div className={styles.Header}>
-                        {header}
+                        <div>{header}</div>
+                        <Close onClick={onClose} />
                     </div>
                     <div className={styles.Content}>
                         {children}

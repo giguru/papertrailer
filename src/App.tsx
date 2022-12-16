@@ -15,7 +15,7 @@ import PublicNets from "./pages/PublicNets";
 import AuthProvider from "./components/auth-provider/AuthProvider";
 import LoginPage from "./pages/LoginPage";
 
-axios.defaults.baseURL = 'http://0.0.0.0/api';
+axios.defaults.baseURL = 'http://0.0.0.0:80/api';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const queryClient = new QueryClient({});

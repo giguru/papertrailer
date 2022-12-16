@@ -6,16 +6,21 @@ import {ApiFileInterface} from "../../api/models";
 import Loader from "../loader/Loader";
 import styles from './FileUploaderList.module.scss';
 import {ServerResponse} from "../../api/api";
-import {CheckCircleOutlineOutlined} from "@mui/icons-material";
+import {CheckCircleOutlineOutlined, Close, Warning} from "@mui/icons-material";
+import {useDeleteFiles} from "../../api/hooks/files";
 
 
-type Props = Pick<FormProps<{}>, 'endpoint'> & Pick<FileUploadProps, 'accept'>
+type Props = Pick<FormProps<{}>, 'endpoint'> & Pick<FileUploadProps, 'accept'> & {
+    additionalData: Record<string, string>
+}
+type FileUploads = Record<number, string | Pick<ApiFileInterface, 'title'>>;
+type FileErrors = Record<number, string>;
 
-type fileUploads = Record<number, string | Pick<ApiFileInterface, 'title'>>;
-
-function FileUploaderList({ endpoint, accept }: Props) {
-    const fileUploadsRef = useRef<fileUploads>({})
-    const [fileUploads, setFileUploads] = useState<fileUploads>({});
+function FileUploaderList({ endpoint, accept, additionalData }: Props) {
+    const fileUploadsRef = useRef<FileUploads>({})
+    const fileErrorsRef = useRef<FileErrors>({})
+    const [fileUploads, setFileUploads] = useState<FileUploads>({});
+    const [fileErrors, setFileErrors] = useState<FileUploads>({});
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target?.files instanceof FileList && e.target.files;
@@ -35,47 +40,93 @@ function FileUploaderList({ endpoint, accept }: Props) {
         for (let i = 0; i < files.length; i++) {
             const file = files[i]
             const fd = new FormData();
+            for (const additionalDataKey in additionalData) {
+                fd.append(additionalDataKey, additionalData[additionalDataKey]);
+            }
             fd.append('file', file);
             const key = i + initCount;
             fileUploadsRef.current[key] = file.name;
-            axios.post<FormData, AxiosResponse<ServerResponse<ApiFileInterface>>>(endpoint, fd)
+            axios
+                .post<FormData, AxiosResponse<ServerResponse<ApiFileInterface>>>(endpoint, fd)
                 .then((result) => {
                     fileUploadsRef.current[key] = result.data.data || { title: file.name }
                     setFileUploads({...fileUploadsRef.current});
+                    delete fileErrorsRef.current[key];
+                    setFileErrors({...fileErrorsRef.current})
+                })
+                .catch((e) => {
+                    fileErrorsRef.current[key] = e.response.data?.message || e.message;
+                    setFileErrors({...fileErrorsRef.current})
                 })
         }
         setFileUploads({...fileUploadsRef.current});
     }
 
+    const deleteListItem = (key: number) => {
+        delete fileErrorsRef.current[key];
+        delete fileUploadsRef.current[key];
+        setFileUploads({...fileUploadsRef.current});
+        setFileErrors({...fileErrorsRef.current})
+    }
+
     return (
         <>
             <ul className={styles.UploadedList}>
-                {Object.values(fileUploads).map((value, idx) => {
-                    return (
-                        <div key={idx} className={styles.UploadedItem}>
-                            {typeof value === 'string' && (
-                                <>
-                                <span className={styles.Icon}>
-                                    <Loader size="inline" />
-                                </span>
-                                    <span className={styles.Title}>&nbsp;Uploading: {value}</span>
-                                </>
-                            )}
-                            {typeof value === 'object' && value.title && (
-                                <>
-                                    <CheckCircleOutlineOutlined className={styles.Icon} />
-                                    <span className={styles.Title}>
-                                    Completed upload:
-                                        &nbsp;
-                                        {value.title}
-                                </span>
-                                </>
-                            )}
-                        </div>
-                    )
-                })}
+                {Object.keys(fileUploads)
+                    .map(key => Number(key))
+                    .map((key) => {
+                        const value = fileUploads[key];
+                        const error = fileErrors[key];
+
+                        return (
+                            <div key={key} className={styles.UploadedItem}>
+                                {!error && typeof value === 'string' && (
+                                    <>
+                                        <span className={styles.Icon}>
+                                            <Loader size="inline" />
+                                        </span>
+                                        <span className={styles.Title}>&nbsp;Uploading: {value}</span>
+                                    </>
+                                )}
+                                {error && typeof error === 'string' && (
+                                    <>
+                                        <span className={styles.Icon}>
+                                            <Warning className="color" />
+                                        </span>
+                                        <span className={styles.Title}>
+                                            <span>&nbsp;Error: </span>
+                                            <span>{typeof value === 'string' ? value: value?.title}</span>
+                                            <div>{error}</div>
+                                            <div>
+                                                <Close onClick={() => deleteListItem(key)} />
+                                            </div>
+                                        </span>
+                                    </>
+                                )}
+                                {!error && typeof value === 'object' && value.title && (
+                                    <>
+                                        <CheckCircleOutlineOutlined className={styles.Icon} />
+                                        <span className={styles.Title}>
+                                            Completed upload:&nbsp;{value.title}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        )
+                    })}
             </ul>
-            <FileUpload accept={accept} onChange={onChange} onDrop={onDrop} />
+            <FileUpload
+                accept={accept}
+                onChange={onChange}
+                onDrop={onDrop}
+                hoverLabel={(
+                    <>
+                        Click or drag to upload file.<br />
+                        Accepted file types: &nbsp;
+                        <strong className="colorPrimary">{accept}</strong>
+                    </>
+                )}
+            />
         </>
     );
 }

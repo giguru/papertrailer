@@ -17,6 +17,7 @@ import {Link} from "react-router-dom";
 import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
+import NewFileButton from "../files/NewFileButton";
 
 function Logo () {
     return (
@@ -157,6 +158,7 @@ const TopMenuBar = () => {
                         ))}
                     </Box>
                     <input className={styles.SearchBar} placeholder="Search files, relations or comments..." />
+                    <NewFileButton />
                     {loggedInUser ? (
                         <>
                             <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>

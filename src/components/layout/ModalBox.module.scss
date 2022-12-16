@@ -24,6 +24,8 @@
         .Header {
             font-size: $fontSizeLg;
             padding: $spaceXl;
+            display: flex;
+            justify-content: space-between;
         }
         .Footer {
             text-align: center;

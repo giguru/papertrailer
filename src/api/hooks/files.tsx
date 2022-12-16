@@ -1,7 +1,8 @@
-import {useQuery} from "react-query";
-import axios from "axios";
+import {useMutation, useQuery} from "react-query";
+import axios, {AxiosError} from "axios";
 import {ApiFileInterface} from "../models";
 import {ServerGetResponse, ServerIndexResponse} from "../api";
+import {useDisappearingFeedback} from "../../utils/hooks/useDisappearingFeedback";
 
 
 export function useFile(id: string | number, params: Record<string, any> | undefined = undefined) {
@@ -21,7 +22,7 @@ export function useFile(id: string | number, params: Record<string, any> | undef
 }
 
 export function useFiles({ with: withParam }: { with?: string[] }) {
-    const { data: fullData, error, isLoading, isFetching } = useQuery(
+    const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
         ['files'],
         () => axios.get<ServerIndexResponse<ApiFileInterface[]>>(`/files`, { params: { _with: withParam || [], _orderBy: 'created_at' }}),
         { retry: 2 },
@@ -34,5 +35,33 @@ export function useFiles({ with: withParam }: { with?: string[] }) {
         error,
         isLoading,
         isFetching,
+        refetch,
     };
+}
+
+interface useDeleteFilesInterface {
+    onSettled: () => void
+    onError: (err: AxiosError) => void
+}
+
+export function useDeleteFiles({ onSettled, onError }: useDeleteFilesInterface) {
+    const { feedback, setFeedback } = useDisappearingFeedback();
+
+    const { mutate: deleteFiles } = useMutation(
+        'delete-files',
+        (ids: string[]) => axios.delete(`files/${ids.join(',')}`)
+            .then(() => {
+                setFeedback(`Deleted ${ids.length} files`);
+            })
+            .catch(onError),
+        {
+            onSettled: () => {
+                onSettled();
+            },
+        }
+    );
+    return {
+        deleteFiles,
+        feedback
+    }
 }

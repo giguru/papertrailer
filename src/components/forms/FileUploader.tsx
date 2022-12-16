@@ -5,12 +5,13 @@ import {CloudUpload} from "@mui/icons-material";
 import cx from "classnames";
 import classes from './FileUploader.module.scss'
 
+type LabelType = string | React.ReactNode;
+
 export type FileUploadProps = {
     imageButton?: boolean
     accept: string
-    hoverLabel?: string
-    dropLabel?: string
-    width?: string
+    hoverLabel?: LabelType
+    dropLabel?: LabelType
     height?: string
     backgroundColor?: string
     image?: {
@@ -29,13 +30,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                                                           imageButton = false,
                                                           hoverLabel = 'Click or drag to upload file',
                                                           dropLabel = 'Drop file here',
-                                                          width = '600px',
-                                                          height = '100px',
+                                                          height = '150px',
                                                           backgroundColor = '#fff',
                                                           onChange,
                                                           onDrop,
                                                       }) => {
-    const [labelText, setLabelText] = useState<string>(hoverLabel || '')
+    const [labelText, setLabelText] = useState<LabelType>(hoverLabel || '')
     const [isDragOver, setIsDragOver] = useState<boolean>(false)
     const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
     const stopDefaults = (e: React.DragEvent) => {
@@ -85,7 +85,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 className={cx(classes.root, isDragOver && classes.onDragOver)}
             >
                 <Box
-                    width={width}
                     height={height}
                     bgcolor={backgroundColor}
                     className={classes.noMouseEvent}
@@ -93,11 +92,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     {(!imageButton || isDragOver || isMouseOver) && (
                         <Box
                             height={height}
-                            width={width}
                             className={classes.iconText}
                         >
                             <CloudUpload fontSize="large"/>
-                            <Typography>{labelText}</Typography>
+                            <Typography lineHeight={1}>{labelText}</Typography>
                         </Box>
                     )}
                 </Box>

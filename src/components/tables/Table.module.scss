@@ -29,4 +29,23 @@
             &:hover { background-color:  $zinc100; }
         }
     }
+    .Checkbox {
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.SummaryFooter {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding: $space;
+    border-top: 1px solid $zinc500;
+
+    .Content {
+        display: inline-flex;
+        gap: 10px;
+        align-items: flex-start;
+    }
 }

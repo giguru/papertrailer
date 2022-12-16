@@ -23,9 +23,13 @@
 .noMouseEvent {
     pointer-events: none;
     background-color: $zinc50;
+    width: 100%;
+    flex: 1;
+    position: relative;
 }
 
 .iconText {
+    flex: 1;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -33,6 +37,7 @@
     position: absolute;
     color: $zinc500;
     border: 3px dashed $emerald300;
+    width: 100%;
 
     &:hover {
         background-color: $emerald200;
