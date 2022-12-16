@@ -6,10 +6,8 @@ import RelationPopUp, {fileBoundingBlockToSelection} from "../RelationPopUp";
 import {useEditorViewerContext} from "../EditorViewerContext";
 import FloatingPane from "../../FloatingPane";
 import CommentSection from "../../comments/CommentSection";
-import DividerWithText from "../../DividerWithText";
 import DateSpan from "../../texts/DateSpan";
 import UserNameSpan from "../../texts/UserNameSpan";
-import Header from "../../texts/Header";
 import StatStrip from "../../texts/StatStrip";
 import ContentTypeIndicator from "./ContentTypeIndicator";
 
@@ -60,31 +58,35 @@ function RelationDisplay({ relation }: { relation: ExtendedApiRelationInterface 
                             }}
                             onClick={open}
                         />
-                        {blockA && blockB && isOpen && (
+                        {isOpen && (
                             <FloatingPane
                                 onClose={() => setOpenRelation(false)}
                                 position={{ top: 30, left: -350 }}
                                 className={styles.ContentModal}
                             >
                                 <FloatingPane.Content>
-                                    <StatStrip
-                                        elements={[
-                                            <span>
+                                    {blockA && blockB && (
+                                        <>
+                                            <StatStrip
+                                                elements={[
+                                                    <span>
                                                 Created&nbsp;
-                                                <DateSpan date={relation.created_at} />
-                                                {relation.created_by
-                                                    && <span>By <UserNameSpan user={relation.created_by} /></span>}
+                                                        <DateSpan date={relation.created_at} />
+                                                        {relation.created_by
+                                                            && <span>By <UserNameSpan user={relation.created_by} /></span>}
                                             </span>,
-                                        ]}
-                                    />
-                                    <RelationPopUp
-                                        relationId={relation.id}
-                                        selectionA={fileBoundingBlockToSelection(blockA)}
-                                        selectionB={fileBoundingBlockToSelection(blockB)}
-                                        initialFormData={{
-                                            ...relation
-                                        }}
-                                    />
+                                                ]}
+                                            />
+                                            <RelationPopUp
+                                                relationId={relation.id}
+                                                selectionA={fileBoundingBlockToSelection(blockA)}
+                                                selectionB={fileBoundingBlockToSelection(blockB)}
+                                                initialFormData={{
+                                                    ...relation
+                                                }}
+                                            />
+                                        </>
+                                    )}
                                 </FloatingPane.Content>
 
                                 <FloatingPane.Footer>

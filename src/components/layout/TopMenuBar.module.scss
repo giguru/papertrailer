@@ -65,10 +65,10 @@
                 background-color: #fff;
                 padding: $spaceXxs $spaceSm;
                 border-radius: $borderRadius;
-                margin-bottom: $spaceXxs;
+                margin-bottom: $spaceXs;
                 text-decoration: none;
                 font-size: $fontSm;
-                color: $zinc700;
+                color: $zinc500;
 
                 .PreHeader {
                     float: right;
@@ -76,6 +76,8 @@
                     font-size: $fontXs;
                 }
                 .Title {
+                    color: $zinc700;
+                    margin-bottom: $spaceXs;
                     font-weight: 500;
                 }
                 .Div {
@@ -85,6 +87,9 @@
                 }
                 .Context {
                     text-decoration: none;
+                }
+                b {
+                    color: $emerald500;
                 }
                 clear: both;
             }

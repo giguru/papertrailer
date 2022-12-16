@@ -26,7 +26,7 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
         isLoading,
         error,
     } = useFile(fileId, { with: ['files']});
-    const { relations, refetch: refetchRelations } = useFileRelations(fileId)
+    const { relations, refetch: refetchRelations } = useFileRelations(fileId, { _with: ['file_bounding_blocks'] })
     const { comments, refetch: refetchComents } = useComments('file', fileId, { _with: ['file_bounding_blocks'] })
 
     const refreshData = () => {
@@ -47,7 +47,6 @@ function EditorViewer({ Component, fileId, isActive = true }: EditorViewerProps)
         [Component],
     );
 
-    console.log({ error })
     return (
         <div className={`${styles.EditorViewerLayout}`}>
             <EditorViewerContainer className={styles.PageCanvas}>

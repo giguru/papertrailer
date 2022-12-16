@@ -27,6 +27,7 @@ import {useTimeout} from "../../utils/hooks/useTimeout";
 import ErrorBoundary from "../ErrorBoundary";
 import NoResults from "../NoResults";
 import Loader from "../loader/Loader";
+import {relationOptions, RelationValue} from "../../utils/enums";
 
 function useSearch() {
     const id = useId();
@@ -71,6 +72,19 @@ function searchLink(item: ApiSearchInterface) {
     }
     return '';
 }
+function replaceRelationTag(context: string) {
+    const regex = /\<relation\>([A-Z\_]+)<\/relation>/g;
+    const found = context.match(regex);
+    if (found && found.length > 0) {
+        const relationString = found[0]
+            .replace('<relation>', '')
+            .replace('</relation>', '') as RelationValue;
+        const relation = relationOptions[relationString];
+
+        return context.replace(found[0], `<b style="color: ${relation.color}">${relation.label}</b>`)
+    }
+    return context
+}
 
 function SearchBar() {
     const [focus, setFocus] = useState(false)
@@ -103,9 +117,9 @@ function SearchBar() {
                                         <span className={styles.Div} />
                                         <span className={styles.Id}>{item.object.id}</span>
                                     </div>
-                                    <div className={styles.Title} dangerouslySetInnerHTML={{__html: item.title }} />
+                                    <div className={styles.Title} dangerouslySetInnerHTML={{ __html: item.title }} />
                                     {item.context && (
-                                        <span className={styles.Context} dangerouslySetInnerHTML={{__html: item.context }} />
+                                        <span className={styles.Context} dangerouslySetInnerHTML={{__html: replaceRelationTag(item.context) }} />
                                     )}
                                 </>
                             )
@@ -114,11 +128,7 @@ function SearchBar() {
                                 <Link to={link} className={styles.ResultItem} key={item.object.id}>
                                     {content}
                                 </Link>
-                            ) : (
-                                <a className={styles.ResultItem} key={item.object.id}>
-                                    {content}
-                                </a>
-                            );
+                            ) : <a className={styles.ResultItem} key={item.object.id}>{content}</a>;
                         })}
                     </div>
                     {!isSearching && Array.isArray(results) && results.length === 0 && (
