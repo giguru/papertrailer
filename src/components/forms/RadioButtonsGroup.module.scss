@@ -10,7 +10,7 @@
 }
 
 .InlineRadioGroup {
-    flex-direction: row;
+    flex-direction: row !important;
     .Inline {
         display: inline-flex;
     }

@@ -34,6 +34,7 @@ export type ApiUserInterface = Timestamps & {
 type ApiSearchInterface = {
     type: 'file' | 'relation'
     title: string,
+    context: string,
     object: Timestamps & {
         id: number
     }

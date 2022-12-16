@@ -18,41 +18,53 @@ import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
 import NewFileButton from "../files/NewFileButton";
-import {useState} from "react";
+import {useId, useRef, useState} from "react";
 import axios from "axios";
 import {useQuery} from "react-query";
 import {ServerIndexResponse} from "../../api/api";
 import {ApiCommentsInterface, ApiSearchInterface} from "../../api/models";
 import {useTimeout} from "../../utils/hooks/useTimeout";
+import ErrorBoundary from "../ErrorBoundary";
+import NoResults from "../NoResults";
+import Loader from "../loader/Loader";
 
 function useSearch() {
+    const id = useId();
+    const { doTimeout } = useTimeout({ time: 500 });
     const [value, setValue] = useState('');
+    const [isDelaying, setDelaying] = useState(false);
+    const [immediateValue, setImmediateValue] = useState('');
     const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
-        ['search', value],
+        ['search', id, value],
         () => axios.get<ServerIndexResponse<ApiSearchInterface[]>>(`/search?q=${value}`),
         { enabled: Boolean(value) }
     );
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
+        setImmediateValue(e.target.value);
+        setDelaying(true);
+        doTimeout(() => {
+            setDelaying(false);
+            setValue(e.target.value);
+        })
     };
 
     const results : ApiSearchInterface[] | undefined = fullData?.data.data || undefined;
 
     return {
-        value,
+        value: immediateValue,
         results,
         onChange,
         error,
-        isFetching,
+        isSearching: isFetching || isDelaying,
     }
 
 }
 
 function SearchBar() {
     const [focus, setFocus] = useState(false)
-    const { value, onChange, results } = useSearch();
-    const { doTimeout } = useTimeout({ time: 1000 });
+    const { value, onChange, results, isSearching } = useSearch();
+    const { doTimeout } = useTimeout({ time: 200 });
 
     return (
         <div className={[styles.SearchBarContainer, focus ? styles.Focus : ''].join(' ')}>
@@ -62,22 +74,33 @@ function SearchBar() {
                 value={value}
                 onFocus={(e) => setFocus(true)}
                 onBlur={(e) => doTimeout(() => setFocus(false))}
-                onChange={onChange}
+                onChange={(e) => {
+                    e.persist()
+                    setFocus(true);
+                    onChange(e);
+                }}
             />
             {focus && (
                 <div className={styles.SearchBarResultsContainer}>
+                    {isSearching && <Loader />}
                     <div className={styles.ResultsList}>
-                        {Array.isArray(results) && results.map((item) => (
+                        {!isSearching && Array.isArray(results) && results.length > 0 && results.map((item) => (
                             <Link to={routes.editFile(item.object.id)} className={styles.ResultItem} key={item.object.id}>
                                 <div className={styles.PreHeader}>
                                     <span className={styles.Type}>{item.type}</span>
                                     <span className={styles.Div} />
                                     <span className={styles.Id}>{item.object.id}</span>
                                 </div>
-                                <span className={styles.Title}>{item.title}</span>
+                                <span className={styles.Title} dangerouslySetInnerHTML={{__html: item.title }} />
+                                {item.context && (
+                                    <span className={styles.Snippet} dangerouslySetInnerHTML={{__html: `...${item.context}...` }} />
+                                )}
                             </Link>
                         ))}
                     </div>
+                    {!isSearching && Array.isArray(results) && results.length === 0 && (
+                        <NoResults>No results found</NoResults>
+                    )}
                 </div>
             )}
         </div>
