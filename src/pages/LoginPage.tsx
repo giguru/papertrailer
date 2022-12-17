@@ -10,7 +10,7 @@ function LoginPage() {
     const auth = useAuth();
     const navigate = useNavigate();
     const initialData = {
-        email_or_username: '',
+        email: '',
         password: '',
         token_name: 'website',
     };
@@ -30,7 +30,7 @@ function LoginPage() {
                 isNew
             >
                 <h1>Log in</h1>
-                <TextInput.Formik name="email_or_username" label="Email" />
+                <TextInput.Formik name="email" label="Email" />
                 <TextInput.Formik name="password" type="password" label="Password" />
                 <SaveButton text="Log in" />
             </Form>

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {ApiFileInterface, ApiUserInterface} from "../../api/models";
+import {ApiUserInterface} from "../../api/models";
 import {useQuery} from "react-query";
 import axios from "axios";
 import {ServerGetResponse} from "../../api/api";
@@ -28,7 +28,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const nav = useNavigate();
     const [token, setToken] = useState<string | null>(localStorage.getItem(loginTokenName));
 
-    const { data: fullData, error, isLoading, isFetching } = useQuery(
+    const { data: fullData, error, isLoading, isFetching, refetch, remove } = useQuery(
         ['me', token],
         () => axios.get<ServerGetResponse<ApiUserInterface>>(`/me`, {
             headers: {
