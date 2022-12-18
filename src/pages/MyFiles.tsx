@@ -10,6 +10,7 @@ import Paragraph from "../components/texts/Paragraph";
 import {Row} from "react-table";
 import NewFileButton from "../components/files/NewFileButton";
 import Alert from "@mui/material/Alert";
+import PublishSwitch from "../components/publish/PublishSwitch";
 
 interface SourcesProp {
 
@@ -50,14 +51,19 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                         { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => <><strong>{value}</strong><br/>{row.original.description && <small>{row.original.description}</small>}</> },
                         { Header: 'Comments', accessor: 'comments_count' },
                         { Header: 'Relations', accessor: 'relations_count' },
-                        { Header: 'Uploaded at', accessor: 'created_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
-                        { Header: 'Uploader', accessor: 'created_by', Cell: ({ value }: { value: any }) => value && <UserNameSpan user={value} /> },
+                        { Header: 'Uploaded at', accessor: 'created_at', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
+                            <>
+                                <DateSpan date={value} />
+                                {row.original.created_by && <UserNameSpan user={row.original.created_by} />}
+                            </>
+                            )},
+                        { Header: 'Public', accessor: 'is_public', Cell: ({ value, row }: { value: any, row: Row<typeof files[0]>}) => <PublishSwitch subjectId={row.original.id} defaultChecked={row.original.is_public} /> },
                         { Header: 'Last modified', accessor: 'updated_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
                     ]}
                     checkboxActions={[
                         { value: 'delete', label: 'Delete' },
                     ]}
-                    onSubmit={(action, values, helpers) => {
+                    onCheckboxSubmit={(action, values, helpers) => {
                         setCheckboxError('');
                         if (action === 'delete') {
                             deleteFiles(values.keys)

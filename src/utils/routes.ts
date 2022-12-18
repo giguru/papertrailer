@@ -4,6 +4,8 @@ export const routes = {
     publicNets: '/public',
     login: '/login',
     myFiles: '/user/files',
+    myLabels: '/user/labels',
+    myOrganisations: '/user/organisations',
     accountSettings: '/user/settings',
     myProfile: '/user/profile',
     editFile: (fileId: number | string) => `/editor/${fileId}`,

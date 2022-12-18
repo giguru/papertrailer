@@ -164,6 +164,7 @@ type PageType = {[label: string] : ApiEndpoint };
 
 const pages : PageType = {
     'My files': routes.myFiles,
+    'My labels': routes.myLabels,
 };
 
 const publicPages : PageType = {
@@ -171,6 +172,7 @@ const publicPages : PageType = {
 };
 
 const settings : PageType = {
+    'My Organisations': routes.myOrganisations,
     'Profile': routes.myProfile,
     'Account Settings': routes.accountSettings,
 };

@@ -69,6 +69,16 @@ type ApiFileBoundingBlockInterface = Timestamps & {
     }
 }
 
+type ApiLabelInterface = Timestamps & {
+    id: number,
+    name: string,
+    color: string,
+    parent?: ApiLabelInterface,
+    parent_id: number,
+    children?: ApiLabelInterface[],
+    created_by?: ApiUserInterface,
+}
+
 type ApiFileInterface = Timestamps & {
     id: number,
     title: string,
@@ -80,6 +90,7 @@ type ApiFileInterface = Timestamps & {
     comments_count: number,
     relations_count: number,
     processed: 0 | 1,
+    is_public: boolean,
     processed_at: string | null,
     parent_file_id: number | null,
     files: undefined | ApiFileInterface[],
@@ -95,4 +106,5 @@ export {
     ApiFileBoundingBlockInterface,
     ApiRelationInterface,
     ApiSearchInterface,
+    ApiLabelInterface,
 }

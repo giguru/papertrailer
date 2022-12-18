@@ -14,6 +14,8 @@ import {routes} from "./utils/routes";
 import PublicNets from "./pages/PublicNets";
 import AuthProvider from "./components/auth-provider/AuthProvider";
 import LoginPage from "./pages/LoginPage";
+import MyLabels from "./pages/MyLabels";
+import MyOrganisations from "./pages/MyOrganisations";
 
 axios.defaults.baseURL = 'http://0.0.0.0:80/api';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -98,6 +100,8 @@ function App() {
                                 <Route path={routes.home} element={<Home />} />
                                 <Route path={routes.login} element={<LoginPage />} />
                                 <Route path={routes.myFiles} element={<MyFiles />} />
+                                <Route path={routes.myLabels} element={<MyLabels />} />
+                                <Route path={routes.myOrganisations} element={<MyOrganisations />} />
                                 <Route path={routes.publicNets} element={<PublicNets />} />
                                 <Route path={routes.editFile(':fileId')} element={<Editor />} />
                             </Route>

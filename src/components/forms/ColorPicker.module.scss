@@ -1,0 +1,19 @@
+@import "src/sass/variables";
+
+.Container {
+    position: relative;
+}
+.Picker {
+    position: absolute;
+    left: 110%;
+    top: 0;
+    z-index: $zIndexColorPicker;
+}
+
+.Preview {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #fff;
+    box-shadow: $boxShadow;
+    border-radius: $borderRadius;
+}
