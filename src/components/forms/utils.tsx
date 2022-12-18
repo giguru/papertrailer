@@ -1,8 +1,9 @@
 export type ValueType = string;
 
-export interface OptionInterface {
-    value: ValueType,
+export interface OptionInterface<T = ValueType> {
+    value: T,
     label: string,
+    color?: string,
     optionGroup?: string
 }
 export interface GroupedOptions {

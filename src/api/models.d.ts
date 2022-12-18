@@ -96,6 +96,7 @@ type ApiFileInterface = Timestamps & {
     files: undefined | ApiFileInterface[],
     created_by?: ApiUserInterface,
     file_bounding_blocks: undefined | Array<BoundingBlock>,
+    labels?: ApiLabelInterface[]
 }
 
 export {

@@ -11,13 +11,14 @@ import {Row} from "react-table";
 import NewFileButton from "../components/files/NewFileButton";
 import Alert from "@mui/material/Alert";
 import PublishSwitch from "../components/publish/PublishSwitch";
+import LabelDisplay from "../components/labels/LabelDisplay";
 
 interface SourcesProp {
 
 }
 
 const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
-    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy'] });
+    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy', 'labels'] });
     const [checkboxError, setCheckboxError] = useState('');
     const { deleteFiles, feedback } = useDeleteFiles({
         onSettled: () => refetch(),
@@ -48,7 +49,14 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                     checkboxes
                     idKey="id"
                     columns={[
-                        { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => <><strong>{value}</strong><br/>{row.original.description && <small>{row.original.description}</small>}</> },
+                        { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
+                            <>
+                                <strong>{value}</strong>
+                                <br/>
+                                {row.original.description && <small>{row.original.description}</small>}
+                                {row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}
+                            </>
+                        )},
                         { Header: 'Comments', accessor: 'comments_count' },
                         { Header: 'Relations', accessor: 'relations_count' },
                         { Header: 'Uploaded at', accessor: 'created_at', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (

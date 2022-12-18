@@ -13,8 +13,11 @@ import Box from "@mui/material/Box";
 import DeleteButton from "../../forms/DeleteButton";
 import {useNavigate} from "react-router";
 import {routes} from "../../../utils/routes";
+import ItemPicker from "../../forms/ItemPicker";
+import {useLabels} from "../../../api/hooks/labels";
 
 function InnerForm() {
+    const { labels } = useLabels({ });
     const { relations } = useEditorViewerContext();
     const { values: file } = useFormikContext<ApiFileInterface>();
     const navigate = useNavigate();
@@ -25,6 +28,9 @@ function InnerForm() {
             <TextInput.Formik name="title" label="Title" />
             <TextInput.Formik name="description" label="Description" multiline />
             <TextInput.Formik name="origin_url" label="Origin URL" />
+            <ItemPicker.Formik label="Labels" name="labels" options={labels?.map((label ) => (
+                { value: `${label.id}`, label: label.name, color: label.color }
+            )) || []} />
             <Box style={{ justifyContent: 'space-between', display: 'flex' }}>
                 <DeleteButton endpoint={`/files/${file.id}`} onSuccess={afterDelete} />
                 <SaveButton />
@@ -54,7 +60,7 @@ export default function FilePanel({ fileId }: { fileId: number | string }) {
     return sourcePanelOpen ? (
         <SidePanel className={styles.SourcePanel}>
             <Form
-                endpoint={`files/${fileId}`}
+                endpoint={`files/${fileId}?_with[]=labels`}
                 isNew={false}
             >
                 <h2>Edit source information</h2>

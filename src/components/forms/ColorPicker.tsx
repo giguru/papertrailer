@@ -18,7 +18,7 @@ function ColorPickerFormik({ name }: { name: string }) {
     )
 }
 
-function ColorPicker({ onSelect, value }: { onSelect?: (color: ColorResult['hex']) => void, value: string }) {
+function ColorPicker({ onSelect, value, layout = 'square' }: { onSelect?: (color: ColorResult['hex']) => void, value: string, layout?: 'dot' | 'square' }) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -35,7 +35,7 @@ function ColorPicker({ onSelect, value }: { onSelect?: (color: ColorResult['hex'
             )}
             <div
                 style={{ backgroundColor: value }}
-                className={styles.Preview}
+                className={[styles.Preview, layout === 'dot' ? styles.Dot : styles.Square].join(' ')}
                 onClick={!onSelect ? undefined : () => setOpen(true)}
             />
         </span>

@@ -10,10 +10,22 @@
     z-index: $zIndexColorPicker;
 }
 
+.Chip {
+    padding-left: 8px;
+}
 .Preview {
-    width: 30px;
-    height: 30px;
-    border: 2px solid #fff;
-    box-shadow: $boxShadow;
-    border-radius: $borderRadius;
+    margin-left: 5px;
+    &.Square {
+        border: 2px solid #fff;
+        width: 30px;
+        height: 30px;
+        box-shadow: $boxShadow;
+        border-radius: $borderRadius;
+    }
+    &.Dot {
+        box-shadow: $boxShadow;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+    }
 }
