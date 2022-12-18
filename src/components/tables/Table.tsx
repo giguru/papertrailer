@@ -21,7 +21,7 @@ interface TableProps<TRow extends object> {
     linkBuilder?: ({ row }: { row: TRow }) => string,
     checkboxActions?: OptionInterface[]
     editForm?: ({ row, onSuccess }: { row: TRow, onSuccess: () => void }) => JSX.Element,
-    onCheckboxSubmit: (action: OptionInterface['value'], values: FormikValues, helpers: FormikHelpers<any>) => boolean
+    onCheckboxSubmit?: (action: OptionInterface['value'], values: FormikValues, helpers: FormikHelpers<any>) => boolean
 }
 
 function Table<T extends { id: number }>({ rows: rowsProp, columns, linkBuilder, checkboxes, idKey, checkboxActions, onCheckboxSubmit, footerContent, editForm: EditForm } : TableProps<T>) {
@@ -61,12 +61,13 @@ function Table<T extends { id: number }>({ rows: rowsProp, columns, linkBuilder,
             <Formik
                 initialValues={initValues}
                 onSubmit={(values, helpers) => {
-                    const res = onCheckboxSubmit(values.action, values, helpers);
-                    helpers.setSubmitting(false)
-
-                    if (res) {
-                        helpers.setValues(initValues);
+                    if (onCheckboxSubmit) {
+                        const res = onCheckboxSubmit(values.action, values, helpers);
+                        if (res) {
+                            helpers.setValues(initValues);
+                        }
                     }
+                    helpers.setSubmitting(false)
                 }}
             >
                 {({ values, handleSubmit }) => (

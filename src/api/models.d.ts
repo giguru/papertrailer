@@ -1,6 +1,8 @@
 import {BoundingBlock} from "../components/editor/EditorViewer.utils";
 import {RelationValue, EmotionValue} from "../utils/enums";
 
+type Id = number;
+
 interface Timestamps {
     created_at: string,
     updated_at: string,
@@ -18,7 +20,7 @@ type ApiEmotionCounts = {
     my: ApiEmotionInterface
 }
 type ApiRelationInterface = Timestamps & {
-    id: number
+    id: Id
     title: string
     relation: RelationValue
     created_by?: ApiUserInterface
@@ -26,7 +28,7 @@ type ApiRelationInterface = Timestamps & {
 }
 
 export type ApiUserInterface = Timestamps & {
-    id: number
+    id: Id
     first_name: string
     last_name: string
 }
@@ -43,7 +45,7 @@ type ApiSearchInterface = {
 })
 
 type ApiCommentsInterface = Timestamps & {
-    id: number
+    id: Id
     type: CommentType
     created_by_id: number
     created_by: ApiUserInterface,
@@ -61,7 +63,7 @@ type ApiFileBoundingBlockInterface = Timestamps & {
     width: number
     height: number
     page_index: number
-    id: number,
+    id: Id,
     pivot?: {
         relation_id: number,
         file_bounding_block_id: number
@@ -69,8 +71,13 @@ type ApiFileBoundingBlockInterface = Timestamps & {
     }
 }
 
+type ApiOrganisation = Timestamps & {
+    id: Id,
+    name: string,
+}
+
 type ApiLabelInterface = Timestamps & {
-    id: number,
+    id: Id,
     name: string,
     color: string,
     parent?: ApiLabelInterface,
@@ -80,7 +87,7 @@ type ApiLabelInterface = Timestamps & {
 }
 
 type ApiFileInterface = Timestamps & {
-    id: number,
+    id: Id,
     title: string,
     description: string,
     filename: string,
@@ -108,4 +115,5 @@ export {
     ApiRelationInterface,
     ApiSearchInterface,
     ApiLabelInterface,
+    ApiOrganisation,
 }

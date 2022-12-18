@@ -1,24 +1,24 @@
 import {useMutation, useQuery} from "react-query";
 import axios, {AxiosError} from "axios";
-import {ApiLabelInterface} from "../models";
+import {ApiOrganisation} from "../models";
 import {ServerGetResponse, ServerIndexResponse} from "../api";
 import {useDisappearingFeedback} from "../../utils/hooks/useDisappearingFeedback";
 import {useState} from "react";
 
-export function useLabel(id: string | number, params: Record<string, any> | undefined = undefined) {
+export function useOrganisation(id: string | number, params: Record<string, any> | undefined = undefined) {
     const [axiosError, setAxiosError] = useState('');
     const { data: fullData, error, isLoading, isFetching } = useQuery(
-        ['label', id],
+        ['organisations', id],
         () => {
             setAxiosError('');
-            return axios.get<ServerGetResponse<ApiLabelInterface>>(`/labels/${id}`, { params: params })
+            return axios.get<ServerGetResponse<ApiOrganisation>>(`/organisations/${id}`, { params: params })
                 .catch((err: AxiosError) => {
                     setAxiosError(err.message)
                 })
         }
     );
 
-    const returnData : ApiLabelInterface | undefined = fullData?.data.data || undefined;
+    const returnData : ApiOrganisation | undefined = fullData?.data.data || undefined;
 
     return {
         label: returnData,
@@ -28,17 +28,17 @@ export function useLabel(id: string | number, params: Record<string, any> | unde
     };
 }
 
-export function useLabels({ with: withParam }: { with?: string[] }) {
+export function useOrganisations({ with: withParam }: { with?: string[] }) {
     const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
-        ['labels'],
-        () => axios.get<ServerIndexResponse<ApiLabelInterface[]>>(`/labels`, { params: { _with: withParam || [], _orderBy: 'created_at' }}),
+        ['organisations'],
+        () => axios.get<ServerIndexResponse<ApiOrganisation[]>>(`/organisations`, { params: { _with: withParam || [], _orderBy: 'created_at' }}),
         { retry: 2 },
     );
 
-    const returnData : ApiLabelInterface[] | undefined = fullData?.data.data || undefined;
+    const returnData : ApiOrganisation[] | undefined = fullData?.data.data || undefined;
 
     return {
-        labels: returnData,
+        organisations: returnData,
         error,
         isLoading,
         isFetching,
@@ -55,10 +55,10 @@ export function useDeleteLabels({ onSettled, onError }: useDeleteInterface) {
     const { feedback, setFeedback } = useDisappearingFeedback();
 
     const { mutate: deleteLabels } = useMutation(
-        'delete-labels',
-        (ids: string[]) => axios.delete(`labels/${ids.join(',')}`)
+        'organisations-labels',
+        (ids: string[]) => axios.delete(`organisations/${ids.join(',')}`)
             .then(() => {
-                setFeedback(`Deleted ${ids.length} labels`);
+                setFeedback(`Deleted ${ids.length} organisations`);
             })
             .catch(onError),
         {

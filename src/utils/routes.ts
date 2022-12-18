@@ -5,7 +5,7 @@ export const routes = {
     login: '/login',
     myFiles: '/user/files',
     myLabels: '/user/labels',
-    myOrganisations: '/user/organisations',
+    myOrganisations: '/user/organisations.tsx',
     accountSettings: '/user/settings',
     myProfile: '/user/profile',
     editFile: (fileId: number | string) => `/editor/${fileId}`,
