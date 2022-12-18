@@ -8,6 +8,7 @@ import Button from "../button/Button";
 import {ApiLabelInterface} from "../../api/models";
 import ColorPicker from "../forms/ColorPicker";
 import {SaveButton} from "../forms/Form";
+import {DEFAULT_LABEL_COLOR} from "./LabelDisplay";
 
 function NewLabelForm({ labels, userId, onSuccess } : { userId?: number, labels?: ApiLabelInterface[], onSuccess: () => void }) {
     return (
@@ -15,7 +16,7 @@ function NewLabelForm({ labels, userId, onSuccess } : { userId?: number, labels?
             initialValues={{
                 name: '',
                 parent_id: '',
-                color: '#ddd',
+                color: DEFAULT_LABEL_COLOR,
             }}
             onSubmit={(values, { setSubmitting, resetForm }) => {
                 axios

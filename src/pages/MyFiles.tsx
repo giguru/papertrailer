@@ -54,7 +54,9 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                                 <strong>{value}</strong>
                                 <br/>
                                 {row.original.description && <small>{row.original.description}</small>}
-                                {row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}
+                                {row.original.labels && (
+                                    <><br />{row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}</>
+                                )}
                             </>
                         )},
                         { Header: 'Comments', accessor: 'comments_count' },
