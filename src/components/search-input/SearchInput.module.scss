@@ -1,5 +1,14 @@
 .SearchInput {
+    position: relative;
+    z-index: 3;
+
+    .ResultsContainer {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+    }
     .Result {
+        background-color: #ffffff;
         padding: 15px;
         border-left: 1px solid #ccc;
         border-right: 1px solid #ccc;

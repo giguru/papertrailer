@@ -28,7 +28,7 @@ function SearchDocumentView<T extends Record<string, any>>(
                 <SearchInput<T>
                     placeholder="Search..."
                     onSelect={onSelect}
-                    endpoint="files"
+                    endpoint="search"
                 />
 
                 <DividerWithText text="OR" />

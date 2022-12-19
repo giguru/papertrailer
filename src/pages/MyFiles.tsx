@@ -52,8 +52,7 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                         { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
                             <>
                                 <strong>{value}</strong>
-                                <br/>
-                                {row.original.description && <small>{row.original.description}</small>}
+                                {row.original.description && <><br/><small>{row.original.description}</small></>}
                                 {row.original.labels && (
                                     <><br />{row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}</>
                                 )}

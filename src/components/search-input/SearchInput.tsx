@@ -4,6 +4,7 @@ import styles from './SearchInput.module.scss';
 import {useQuery} from "react-query";
 import axios from "axios";
 import {ServerIndexResponse} from "../../api/api";
+import NoResults from "../NoResults";
 
 
 interface SearchInputProps {
@@ -14,11 +15,11 @@ interface SearchInputProps {
 
 function SearchInput<TItem extends Record<string, string>>({ placeholder, onSelect, endpoint }: SearchInputProps ) {
     const id = useId();
-    const { data: fullData, error, isLoading, isFetching } = useQuery(
-        [endpoint, id],
-        () => axios.get<ServerIndexResponse<TItem[]>>(endpoint)
-    );
     const [query, setQuery] = useState('');
+    const { data: fullData, error, isLoading, isFetching } = useQuery(
+        [endpoint, id, query],
+        () => axios.get<ServerIndexResponse<TItem[]>>(endpoint, { params: { q: query, type :['file'] }})
+    );
 
     let items : TItem[] | undefined = undefined;
     if (fullData?.data) {
@@ -35,13 +36,13 @@ function SearchInput<TItem extends Record<string, string>>({ placeholder, onSele
                 placeholder={placeholder}
                 autoFocus
             />
-            <div>
+            <div className={styles.ResultsContainer}>
                 {query.length > 0 && items && Array.isArray(items) && (
-                    items.map((item) => (
-                        <div onClick={() => onSelect(item)} className={styles.Result}>
-                            {item.title}
-                        </div>
-                    ))
+                    items.length
+                        ? items.map((item) => (
+                            <div onClick={() => onSelect(item)} className={styles.Result} dangerouslySetInnerHTML={{ __html: item.title }} />
+                        ))
+                        : <NoResults>No files found</NoResults>
                 )}
             </div>
         </div>
