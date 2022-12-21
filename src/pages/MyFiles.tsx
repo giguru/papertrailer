@@ -12,6 +12,7 @@ import NewFileButton from "../components/files/NewFileButton";
 import Alert from "@mui/material/Alert";
 import PublishSwitch from "../components/publish/PublishSwitch";
 import LabelDisplay from "../components/labels/LabelDisplay";
+import Icons from './../components/Icons';
 
 interface SourcesProp {
 
@@ -52,6 +53,7 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                         { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
                             <>
                                 <strong>{value}</strong>
+                                {row.original.added_via_extension ? <Icons.AddedViaExtension /> : null}
                                 {row.original.description && <><br/><small>{row.original.description}</small></>}
                                 {row.original.labels && (
                                     <><br />{row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}</>

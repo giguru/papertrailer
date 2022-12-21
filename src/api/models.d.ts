@@ -88,6 +88,7 @@ type ApiLabelInterface = Timestamps & {
 
 type ApiFileInterface = Timestamps & {
     id: Id,
+    added_via_extension: boolean,
     title: string,
     description: string,
     filename: string,
