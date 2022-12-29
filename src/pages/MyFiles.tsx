@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Page from "../components/layout/page/Page";
 import Table from "../components/tables/Table";
+import tableStyles from "../components/tables/Table.module.scss";
 import Loader from "../components/loader/Loader";
 import {routes} from "../utils/routes";
 import {useDeleteFiles, useFiles} from "../api/hooks/files";
@@ -13,13 +14,18 @@ import Alert from "@mui/material/Alert";
 import PublishSwitch from "../components/publish/PublishSwitch";
 import LabelDisplay from "../components/labels/LabelDisplay";
 import Icons from './../components/Icons';
+import EditLabelsModalBox from "../components/modalboxes/EditLabelsModalBox";
+import styles from './MyFiles.module.scss';
+import {ApiSharingInterface, ApiUserInterface} from "../api/models";
+import ShareFileModalBox from "../components/modalboxes/share/ShareFileModalBox";
+
 
 interface SourcesProp {
 
 }
 
 const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
-    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy', 'labels'] });
+    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy', 'labels', 'owner', 'sharings.user'] });
     const [checkboxError, setCheckboxError] = useState('');
     const { deleteFiles, feedback } = useDeleteFiles({
         onSettled: () => refetch(),
@@ -52,24 +58,55 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                     columns={[
                         { Header: 'Title', accessor: 'title', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
                             <>
-                                <strong>{value}</strong>
+                                <strong>{value || <i className={styles.NoName}>No name</i>}</strong>
                                 {row.original.added_via_extension ? <Icons.AddedViaExtension /> : null}
                                 {row.original.description && <><br/><small>{row.original.description}</small></>}
                                 {row.original.labels && (
-                                    <><br />{row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}</>
+                                    <div>
+                                        {row.original.labels?.map((label) => <LabelDisplay key={label.id} label={label} />)}
+                                        <span className={row.original.labels?.length ? tableStyles.HoverShow : undefined}>
+                                            <EditLabelsModalBox
+                                                buttonClassName={styles.InlineLabelsButton}
+                                                initLabels={row.original.labels}
+                                                endpoint={`files/${row.original.id}?_with[]=labels`}
+                                                onSuccess={() => refetch()}
+                                            />
+                                        </span>
+                                    </div>
                                 )}
                             </>
                         )},
-                        { Header: 'Comments', accessor: 'comments_count' },
-                        { Header: 'Relations', accessor: 'relations_count' },
+                        { Header: '', accessor: 'comments_count', Cell: ({ row }: {row: Row<typeof files[0]>}) => (
+                            <>
+                                {row.original.comments_count ? <div>{row.original.comments_count} <Icons.Comment /></div> : null}
+                                {row.original.relations_count ? <div>{row.original.relations_count} <Icons.Relation /></div> : null}
+                            </>
+                        )},
                         { Header: 'Uploaded at', accessor: 'created_at', Cell: ({ value, row }: {value: string, row: Row<typeof files[0]>}) => (
                             <>
                                 <DateSpan date={value} />
                                 {row.original.created_by && <UserNameSpan user={row.original.created_by} />}
                             </>
-                            )},
+                        )},
                         { Header: 'Public', accessor: 'is_public', Cell: ({ value, row }: { value: any, row: Row<typeof files[0]>}) => <PublishSwitch subjectId={row.original.id} defaultChecked={row.original.is_public} /> },
                         { Header: 'Last modified', accessor: 'updated_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
+                        { Header: 'Owner', accessor: 'owner', Cell: ({ value }: { value?: ApiUserInterface }) => <span>{value?.first_name}</span> },
+                        {
+                            Header: 'Shared with',
+                            accessor: 'sharings',
+                            Cell: ({ value, row }: { value?: ApiSharingInterface[], row: Row<typeof files[0]> }) => (
+                                <span>
+                                    {value?.map(i => i.user.first_name).join(', ')}
+                                    <span className={value?.length ? tableStyles.HoverShow : undefined}>
+                                        <ShareFileModalBox
+                                            fileId={row.original.id}
+                                            sharings={value || []}
+                                            onSuccess={() => refetch()}
+                                        />
+                                    </span>
+                                </span>
+                            ),
+                        },
                     ]}
                     checkboxActions={[
                         { value: 'delete', label: 'Delete' },
@@ -90,6 +127,7 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                     )}
                 />
             )}
+            <div className="spacer" />
         </Page>
     );
 };

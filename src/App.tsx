@@ -2,9 +2,10 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 import axios from 'axios';
-import './sass/global.scss';
 import {createTheme, ThemeProvider} from "@mui/material";
+import styles from "./App.module.scss";
 import { Routes, Route } from "react-router";
+import './sass/global.scss';
 import TopMenuBar from './components/layout/TopMenuBar';
 import Home from "./pages/Home";
 import MyFiles from "./pages/MyFiles";
@@ -16,6 +17,8 @@ import AuthProvider from "./components/auth-provider/AuthProvider";
 import LoginPage from "./pages/LoginPage";
 import MyLabels from "./pages/MyLabels";
 import MyOrganisations from "./pages/MyOrganisations";
+import Pricing from "./pages/Pricing";
+import AppFooter from "./components/AppFooter";
 
 axios.defaults.baseURL = 'http://0.0.0.0:80/api';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -94,21 +97,25 @@ function App() {
                 <AuthProvider>
                     <SnippetProvider>
                         <TopMenuBar />
-                        <Routes>
-                            <Route path="/">
-                                <Route index element={<Home />} />
-                                <Route path={routes.home} element={<Home />} />
-                                <Route path={routes.login} element={<LoginPage />} />
-                                <Route path={routes.myFiles} element={<MyFiles />} />
-                                <Route path={routes.myLabels} element={<MyLabels />} />
-                                <Route path={routes.myOrganisations} element={<MyOrganisations />} />
-                                <Route path={routes.publicNets} element={<PublicNets />} />
-                                <Route path={routes.editFile(':fileId')} element={<Editor />} />
-                            </Route>
-                        </Routes>
+                        <main className={styles.AppMain}>
+                            <Routes>
+                                <Route path="/">
+                                    <Route index element={<Home />} />
+                                    <Route path={routes.home} element={<Home />} />
+                                    <Route path={routes.pricing} element={<Pricing />} />
+                                    <Route path={routes.login} element={<LoginPage />} />
+                                    <Route path={routes.myFiles} element={<MyFiles />} />
+                                    <Route path={routes.myLabels} element={<MyLabels />} />
+                                    <Route path={routes.myOrganisations} element={<MyOrganisations />} />
+                                    <Route path={routes.publicNets} element={<PublicNets />} />
+                                    <Route path={routes.editFile(':fileId')} element={<Editor />} />
+                                </Route>
+                            </Routes>
+                        </main>
                     </SnippetProvider>
 
                     <ReactQueryDevtools initialIsOpen={false}/>
+                    <AppFooter />
                 </AuthProvider>
             </QueryClientProvider>
         </ThemeProvider>

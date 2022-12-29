@@ -25,9 +25,12 @@
     transition: all $animationSpeedSlow;
     z-index: $zIndexSearchBarResults;
 
-    &.Focus {
-        min-width: 600px;
+    &.Expands.Focus {
+        min-width: 500px;
         max-width: 100vw;
+    }
+    &.NotExpands {
+        width: auto;
     }
 
     .SearchBar {

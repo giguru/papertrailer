@@ -11,9 +11,16 @@ import styles from './Form.module.scss';
 
 
 function SaveButton({ text = 'Save' }: { text?: string }) {
-    const { isSubmitting } = useFormikContext();
+    const { isSubmitting, submitForm } = useFormikContext();
     return (
-        <Button type="submit" isBusy={isSubmitting} size="large" variant="contained" className={styles.SaveButton}>
+        <Button
+            type="submit"
+            isBusy={isSubmitting}
+            size="large"
+            variant="contained"
+            className={styles.SaveButton}
+            onClick={() => submitForm()}
+        >
             {text}
         </Button>
     )

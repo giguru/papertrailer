@@ -1,12 +1,21 @@
 import React, {useState} from 'react';
+import axios from 'axios';
+import _ from 'lodash';
+import Alert from '@mui/material/Alert';
 import Button from "../button/Button";
-import axios, {AxiosError, AxiosResponse} from "axios";
 import ModalBox from "../layout/ModalBox";
 import Paragraph from "../texts/Paragraph";
-import Alert from "@mui/material/Alert";
 import {ServerErrorResponse} from "../../api/api";
+import {ButtonProps} from "@mui/material";
 
-function DeleteButton({ endpoint, onSuccess }: { endpoint: string, onSuccess: () => void }) {
+interface DeleteButtonProps {
+    endpoint: string
+    onSuccess: () => void
+    verbString?: string
+    size?: ButtonProps['size']
+}
+
+function DeleteButton({ endpoint, onSuccess, verbString = 'delete', size }: DeleteButtonProps) {
     const [isDeleting, setDeleting] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
@@ -27,13 +36,13 @@ function DeleteButton({ endpoint, onSuccess }: { endpoint: string, onSuccess: ()
 
     return (
         <ModalBox.ViaButton
-            buttonText="Delete"
-            header="Delete"
-            size="xs"
+            buttonText={_.startCase(verbString)}
+            header={_.startCase(verbString)}
             color="error"
             variant="outlined"
+            size={size}
         >
-            <Paragraph>Are you sure you want to delete it?</Paragraph>
+            <Paragraph>Are you sure you want to {verbString} it?</Paragraph>
             {submitError && <Alert severity="error">{submitError}</Alert>}
             <Button
                 variant="contained"
@@ -41,7 +50,7 @@ function DeleteButton({ endpoint, onSuccess }: { endpoint: string, onSuccess: ()
                 onClick={doDelete}
                 isBusy={isDeleting}
             >
-                Yes, delete
+                Yes, {verbString}
             </Button>
         </ModalBox.ViaButton>
     );

@@ -28,6 +28,16 @@
             cursor: pointer;
             &:hover { background-color:  $zinc100; }
         }
+
+        .HoverShow {
+            display: none;
+        }
+
+        &:hover {
+            .HoverShow {
+                display: inline-block;
+            }
+        }
     }
     .Checkbox {
         width: 25px;

@@ -13,136 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {useNavigate} from "react-router";
-import {Link, Search} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {routes} from "../../utils/routes";
 import {useAuth} from "../auth-provider/AuthProvider";
 import styles from './TopMenuBar.module.scss';
 import NewFileButton from "../files/NewFileButton";
-import {useId, useRef, useState} from "react";
-import axios from "axios";
-import {useQuery} from "react-query";
-import {ServerIndexResponse} from "../../api/api";
-import {ApiCommentsInterface, ApiSearchInterface} from "../../api/models";
-import {useTimeout} from "../../utils/hooks/useTimeout";
-import ErrorBoundary from "../ErrorBoundary";
-import NoResults from "../NoResults";
-import Loader from "../loader/Loader";
-import {relationOptions, RelationValue} from "../../utils/enums";
+import SearchBar from "./../search-input/SearchBar";
 
-function useSearch() {
-    const id = useId();
-    const { doTimeout } = useTimeout({ time: 500 });
-    const [value, setValue] = useState('');
-    const [isDelaying, setDelaying] = useState(false);
-    const [immediateValue, setImmediateValue] = useState('');
-    const { data: fullData, error, isLoading, isFetching, refetch } = useQuery(
-        ['search', id, value],
-        () => axios.get<ServerIndexResponse<ApiSearchInterface[]>>(`/search?q=${value}`),
-        { enabled: Boolean(value) }
-    );
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setImmediateValue(e.target.value);
-        setDelaying(true);
-        doTimeout(() => {
-            setDelaying(false);
-            setValue(e.target.value);
-        })
-    };
-
-    const results : ApiSearchInterface[] | undefined = fullData?.data.data || undefined;
-
-    return {
-        value: immediateValue,
-        results,
-        onChange,
-        error,
-        isSearching: isFetching || isDelaying,
-    }
-}
-
-function searchLink(item: ApiSearchInterface) {
-    if (item.type === 'file') {
-        return routes.editFile(item.object.id)
-    } else if (item.type === 'relation') {
-        const fbbs = item.object.file_bounding_blocks;
-        if (fbbs?.length) {
-            return routes.viewRelation(fbbs[0]?.file_id, item.object.id);
-        }
-    }
-    return '';
-}
-function replaceRelationTag(context: string) {
-    const regex = /\<relation\>([A-Z\_]+)<\/relation>/g;
-    const found = context.match(regex);
-    if (found && found.length > 0) {
-        const relationString = found[0]
-            .replace('<relation>', '')
-            .replace('</relation>', '') as RelationValue;
-        const relation = relationOptions[relationString];
-
-        return context.replace(found[0], `<b style="color: ${relation.color}">${relation.label}</b>`)
-    }
-    return context
-}
-
-function SearchBar() {
-    const [focus, setFocus] = useState(false)
-    const { value, onChange, results, isSearching } = useSearch();
-    const { doTimeout } = useTimeout({ time: 200 });
-
-    return (
-        <div className={[styles.SearchBarContainer, focus ? styles.Focus : ''].join(' ')}>
-            <input
-                className={styles.SearchBar}
-                placeholder="Search files, relations or comments..."
-                value={value}
-                onFocus={() => setFocus(true)}
-                onBlur={() => doTimeout(() => setFocus(false))}
-                onChange={(e) => {
-                    e.persist()
-                    setFocus(true);
-                    onChange(e);
-                }}
-            />
-            {focus && (
-                <div className={styles.SearchBarResultsContainer}>
-                    {isSearching && <Loader />}
-                    <div className={styles.ResultsList}>
-                        {!isSearching && Array.isArray(results) && results.length > 0 && results.map((item) => {
-                            const content = (
-                                <>
-                                    <div className={styles.PreHeader}>
-                                        <span className={styles.Type}>{item.type}</span>
-                                        <span className={styles.Div} />
-                                        <span className={styles.Id}>{item.object.id}</span>
-                                    </div>
-                                    <div className={styles.Title} dangerouslySetInnerHTML={{ __html: item.title }} />
-                                    {item.context && (
-                                        <span className={styles.Context} dangerouslySetInnerHTML={{__html: replaceRelationTag(item.context) }} />
-                                    )}
-                                </>
-                            )
-                            const link = searchLink(item);
-                            return link ? (
-                                <Link to={link} className={styles.ResultItem} key={item.object.id}>
-                                    {content}
-                                </Link>
-                            ) : <a className={styles.ResultItem} key={item.object.id}>{content}</a>;
-                        })}
-                    </div>
-                    {!isSearching && Array.isArray(results) && results.length === 0 && (
-                        <NoResults>No results found</NoResults>
-                    )}
-                </div>
-            )}
-        </div>
-    );
-}
 
 function Logo () {
     return (
-
         <Link to={routes.home} className={styles.Logo}>
             {'PAPERTRAILER'.split('').map((char, idx) => (
                 <span
@@ -168,7 +48,9 @@ const pages : PageType = {
 };
 
 const publicPages : PageType = {
-    'Public Nets': routes.publicNets,
+    'Open sources': routes.publicNets,
+    'Editorials': routes.publicNets,
+    'Pricing': routes.pricing,
 };
 
 const settings : PageType = {
@@ -280,7 +162,7 @@ const TopMenuBar = () => {
                             </Button>
                         ))}
                     </Box>
-                    <SearchBar />
+                    <SearchBar types={['file', 'comment', 'relation']} />
                     <NewFileButton />
                     {loggedInUser ? (
                         <>

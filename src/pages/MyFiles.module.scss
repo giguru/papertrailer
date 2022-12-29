@@ -1,0 +1,11 @@
+@import "src/sass/variables";
+
+.InlineLabelsButton {
+    padding: 0 !important;
+    font-size: $fontXs !important;
+    margin-bottom: 0;
+}
+
+.NoName {
+    color: $zinc400;
+}

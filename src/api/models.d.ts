@@ -13,6 +13,13 @@ type ApiEmotionInterface = {
     emotion: EmotionValue
 }
 
+type ApiSharingInterface = Timestamps & {
+    id: number,
+    user_id: number,
+    file_id: number,
+    user: ApiUserInterface
+}
+
 export type CommentType = 'relation' | 'file' | 'comment'
 
 type ApiEmotionCounts = {
@@ -103,6 +110,8 @@ type ApiFileInterface = Timestamps & {
     parent_file_id: number | null,
     files: undefined | ApiFileInterface[],
     created_by?: ApiUserInterface,
+    sharings?: ApiSharingInterface[],
+    owner?: ApiUserInterface,
     file_bounding_blocks: undefined | Array<BoundingBlock>,
     labels?: ApiLabelInterface[]
 }
@@ -117,4 +126,5 @@ export {
     ApiSearchInterface,
     ApiLabelInterface,
     ApiOrganisation,
+    ApiSharingInterface,
 }
