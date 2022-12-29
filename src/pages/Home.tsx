@@ -177,18 +177,18 @@ function Home() {
                 <Container>
                     <Row>
                         <Col>
-                            <h2>For academics.</h2>
+                            <h2>Academics.</h2>
                             <p>
                                 Finally bring order to that pile of papers with labels and relations.
                                 And share your insights and readings with fellow researchers.
                             </p>
                         </Col>
                         <Col>
-                            <h2>For journalists.</h2>
+                            <h2>Journalists.</h2>
                             <p></p>
                         </Col>
                         <Col>
-                            <h2>For advisors.</h2>
+                            <h2>Consultants.</h2>
                         </Col>
                     </Row>
                     <Row>
@@ -197,11 +197,18 @@ function Home() {
                             <p>Use timelines to put your sources on </p>
                         </Col>
                         <Col>
-                            <h2>For teachers</h2>
-                            <p>Share a single document with all your students and do research together.</p>
+                            <h2>Teachers and schools.</h2>
+                            <p>
+                                Share a single document with all your students and do research together by
+                                comments or connecting it to other sources.
+                            </p>
                         </Col>
                         <Col>
-
+                            <h2>Lawyers and law firms.</h2>
+                            <p>
+                                Build a database connecting evidence, judicial precedents and laws with each other for your current
+                                clients' or future clients' defence.
+                            </p>
                         </Col>
                     </Row>
                 </Container>

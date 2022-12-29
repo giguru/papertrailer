@@ -28,11 +28,18 @@ const optionRenderer = ({ value, label, color, inline }: { value: ValueType, lab
         key={value}
         control={<Radio />}
         className={[inline ? styles.Inline : ''].join(' ')}
-        label={<span style={{ borderBottomColor: color }} className={styles.OptionLabel}>{label}</span>}
+        label={(
+            <span
+                style={{ borderBottomColor: color || undefined, borderBottomWidth: color ? '3px' : undefined }}
+                className={styles.OptionLabel}
+            >
+                {label}
+            </span>
+        )}
     />
 );
 
-function RadioButtonsGroupField({ name, options, label }: Omit<RadioButtonsGroupInterface, 'onChange' | 'value'>) {
+function RadioButtonsGroupField({ name, options, label, inlineOptions }: Omit<RadioButtonsGroupInterface, 'onChange' | 'value'>) {
     const [field, , helpers] = useField(name);
     return (
         <RadioButtonsGroup
@@ -40,6 +47,7 @@ function RadioButtonsGroupField({ name, options, label }: Omit<RadioButtonsGroup
             options={options}
             label={label}
             value={field.value}
+            inlineOptions={inlineOptions}
             onChange={(e) => {
                 helpers.setValue(e.target.value)
             }}

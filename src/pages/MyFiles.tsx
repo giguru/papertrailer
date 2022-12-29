@@ -16,8 +16,10 @@ import LabelDisplay from "../components/labels/LabelDisplay";
 import Icons from './../components/Icons';
 import EditLabelsModalBox from "../components/modalboxes/EditLabelsModalBox";
 import styles from './MyFiles.module.scss';
-import {ApiSharingInterface, ApiUserInterface} from "../api/models";
+import {ApiOrganisation, ApiSharingInterface, ApiUserInterface} from "../api/models";
 import ShareFileModalBox from "../components/modalboxes/share/ShareFileModalBox";
+import TransferOwnershipModalBox from "../components/modalboxes/transfer-ownership/TransferOwnershipModalBox";
+import Avatar from "@mui/material/Avatar";
 
 
 interface SourcesProp {
@@ -25,7 +27,7 @@ interface SourcesProp {
 }
 
 const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
-    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy', 'labels', 'owner', 'sharings.user'] });
+    const { error, files, isLoading, refetch } = useFiles({ with: ['createdBy', 'labels', 'user', 'organisation', 'sharings.user'] });
     const [checkboxError, setCheckboxError] = useState('');
     const { deleteFiles, feedback } = useDeleteFiles({
         onSettled: () => refetch(),
@@ -90,7 +92,26 @@ const MyFiles: React.FC<SourcesProp> = (props: SourcesProp) => {
                         )},
                         { Header: 'Public', accessor: 'is_public', Cell: ({ value, row }: { value: any, row: Row<typeof files[0]>}) => <PublishSwitch subjectId={row.original.id} defaultChecked={row.original.is_public} /> },
                         { Header: 'Last modified', accessor: 'updated_at', Cell: ({ value }: {value: string}) => <DateSpan date={value} /> },
-                        { Header: 'Owner', accessor: 'owner', Cell: ({ value }: { value?: ApiUserInterface }) => <span>{value?.first_name}</span> },
+                        {
+                            Header: 'Owner',
+                            accessor: 'user',
+                            Cell: ({ row }: { row: Row<typeof files[0]> }) => (
+                                <span>
+                                    {/* @ts-ignore */}
+                                    {row.original.user
+                                        ? (
+                                            <Avatar
+                                                alt={`${row.original.user.first_name} ${row.original.user.last_name}`}
+                                                src="/static/images/avatar/2.jpg"
+                                            />
+                                        )
+                                        : row.original.organisation?.name}
+                                    <span className={tableStyles.HoverShow}>
+                                        <TransferOwnershipModalBox file={row.original} onSuccess={() => refetch()} />
+                                    </span>
+                                </span>
+                            ),
+                        },
                         {
                             Header: 'Shared with',
                             accessor: 'sharings',

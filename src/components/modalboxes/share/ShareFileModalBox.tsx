@@ -71,7 +71,7 @@ function ShareFileModalBox({ sharings, onSuccess, buttonClassName, fileId } : Pr
                     autoFocus
                     expands={false}
                 />
-                <div className="my-3" />
+                <div className="spacer-sm" />
                 {error && <Alert color="error">{error}</Alert>}
                 {allSharings.length > 0 && (
                     <>

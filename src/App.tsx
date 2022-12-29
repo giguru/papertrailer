@@ -73,6 +73,13 @@ const theme = createTheme({
                 },
             },
         },
+        MuiAlert: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'left',
+                },
+            },
+        },
         MuiMenuItem: {
             styleOverrides: {
                 root: {

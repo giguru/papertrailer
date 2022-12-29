@@ -111,7 +111,8 @@ type ApiFileInterface = Timestamps & {
     files: undefined | ApiFileInterface[],
     created_by?: ApiUserInterface,
     sharings?: ApiSharingInterface[],
-    owner?: ApiUserInterface,
+    user?: ApiUserInterface,
+    organisation?: ApiOrganisation,
     file_bounding_blocks: undefined | Array<BoundingBlock>,
     labels?: ApiLabelInterface[]
 }
