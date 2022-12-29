@@ -145,8 +145,12 @@ function Home() {
                 </Container>
             </section>
             <section className={styles.SecondSection}>
-                <h2>Streamlining features.</h2>
                 <Container maxWidth="lg">
+                    <Row>
+                        <Col>
+                            <h2>Streamlining features.</h2>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col>
                             <h3>Work together</h3>
@@ -185,6 +189,19 @@ function Home() {
                         </Col>
                         <Col>
                             <h2>For advisors.</h2>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <h2>For historians.</h2>
+                            <p>Use timelines to put your sources on </p>
+                        </Col>
+                        <Col>
+                            <h2>For teachers</h2>
+                            <p>Share a single document with all your students and do research together.</p>
+                        </Col>
+                        <Col>
+
                         </Col>
                     </Row>
                 </Container>
